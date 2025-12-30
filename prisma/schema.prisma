@@ -1,0 +1,52 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  phoneNumber String   @unique // WhatsApp ID
+  name        String?
+  onboarding  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  profile     Profile?
+  transactions Transaction[]
+  goals       Goal[]
+}
+
+model Profile {
+  id          String @id @default(uuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id])
+  businessType String? // e.g., "Market Trader", "Student"
+  monthlyIncome Float?
+  currency    String @default("GHS")
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        String   // "INCOME" or "EXPENSE"
+  amount      Float
+  category    String   // "Food", "Transport", "Stock"
+  description String?
+  date        DateTime @default(now())
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String   // "School Fees", "New Fridge"
+  targetAmount Float
+  currentAmount Float @default(0)
+  deadline    DateTime?
+}

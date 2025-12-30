@@ -1,0 +1,83 @@
+[
+  {
+    "id": "gh-fin-001",
+    "category": "Savings",
+    "topic": "Susu Savings Schemes",
+    "content": "Susu is a traditional informal savings method popular in Ghana. It involves a group of people contributing a fixed amount daily, weekly, or monthly to a Susu collector. At the end of the period, the accumulated funds are returned to the contributors, usually minus a small fee for the collector. While convenient for traders and daily earners, it is risky if the collector is unregistered. Always verify if your Susu collector is affiliated with the Ghana Co-operative Susu Collectors Association (GCSCA).",
+    "keywords": [
+      "susu",
+      "savings",
+      "informal banking",
+      "GCSCA",
+      "daily contribution"
+    ]
+  },
+  {
+    "id": "gh-fin-002",
+    "category": "Security",
+    "topic": "Mobile Money Fraud Prevention",
+    "content": "Mobile Money (MoMo) fraud is common. Fraudsters may call claiming you won a prize or that they wrongfully sent you money. NEVER share your 4-digit PIN with anyone, not even someone claiming to be from MTN, Telecel, or AT. Official customer service will never ask for your PIN. If you receive a suspicious text about a reversal, do not type any code sent to you. Verify your balance first.",
+    "keywords": [
+      "momo",
+      "mobile money",
+      "fraud",
+      "scam",
+      "PIN security",
+      "mtn",
+      "telecel"
+    ]
+  },
+  {
+    "id": "gh-fin-003",
+    "category": "Investment",
+    "topic": "Government of Ghana Treasury Bills (T-Bills)",
+    "content": "Treasury Bills are short-term debt securities issued by the Bank of Ghana on behalf of the government. They are considered one of the safest investments in Ghana because they are risk-free. You can invest for 91 days, 182 days, or 364 days. You can buy T-Bills through any commercial bank or investment house in Ghana. The interest rate is usually higher than a standard savings account.",
+    "keywords": [
+      "t-bills",
+      "treasury bills",
+      "investment",
+      "government bonds",
+      "bank of ghana",
+      "risk-free"
+    ]
+  },
+  {
+    "id": "gh-fin-004",
+    "category": "Budgeting",
+    "topic": "The 50/30/20 Rule in Cedis",
+    "content": "To manage your monthly income effectively, split your money into three buckets. 50% for Needs (Rent, Trotro fare, Electricity, Water, Food). 30% for Wants (Airtime for browsing, new clothes, entertainment, Jollof outings). 20% for Savings and Debt Repayment (Emergency fund, paying off loan apps). If you earn GHS 1,000, that means GHS 500 for needs, GHS 300 for wants, and GHS 200 for savings.",
+    "keywords": [
+      "budgeting",
+      "50/30/20",
+      "money management",
+      "cedi",
+      "needs vs wants"
+    ]
+  },
+  {
+    "id": "gh-fin-005",
+    "category": "Debt",
+    "topic": "Managing Loan App Debt",
+    "content": "High-interest digital loan apps can lead to a debt trap. Before taking a loan, calculate the total repayment amount including interest and fees. If you are struggling to pay, prioritize high-interest loans first. Avoid borrowing from one app to pay another. Contact the lender to negotiate a repayment plan if you are in default. Report harassment to the Data Protection Commission.",
+    "keywords": [
+      "debt",
+      "loan apps",
+      "interest rates",
+      "repayment",
+      "data protection"
+    ]
+  },
+  {
+    "id": "gh-fin-006",
+    "category": "Investment",
+    "topic": "Unit Trusts and Mutual Funds",
+    "content": "If you don't have enough money to buy T-Bills directly or want higher returns, consider Unit Trusts. This is where many people pool small amounts of money together (e.g., as low as GHS 50) to invest in a mix of T-Bills, shares, and bonds. It is managed by professional fund managers (e.g., Databank, Stanlib, IC Securities). It's a good way to start investing with small capital.",
+    "keywords": [
+      "unit trust",
+      "mutual funds",
+      "investment",
+      "databank",
+      "compound interest"
+    ]
+  }
+]

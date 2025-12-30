@@ -1,0 +1,7 @@
+{
+  "name": "Osikani Hybrid Backend Dashboard",
+  "description": "A comprehensive admin dashboard and simulator for the Osikani Financial Literacy Chatbot. It visualizes the multi-tiered hybrid inference architecture (Cache -> RAG -> Gemini), manages knowledge ingestion, and provides a live chat simulation with the specific Ghanaian Pidgin persona.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
