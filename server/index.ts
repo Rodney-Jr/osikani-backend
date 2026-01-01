@@ -28,6 +28,22 @@ app.use('/api/rag', ragRouter);
 app.post('/api/chat', generateChatResponse);
 app.post('/api/whatsapp', handleWhatsAppMessage);
 
+// Static Serving for Production
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (process.env.NODE_ENV === 'production') {
+    const clientDistPath = path.join(__dirname, '../client');
+    app.use(express.static(clientDistPath));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(clientDistPath, 'index.html'));
+    });
+}
+
 
 // Start Server
 app.listen(PORT, () => {

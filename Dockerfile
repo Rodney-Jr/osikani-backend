@@ -1,34 +1,24 @@
-# Stage 1: Build the React Application
-FROM node:20-alpine as builder
+# Base Image
+FROM node:20-alpine
 
+# Working Directory
 WORKDIR /app
 
-# Copy package definition first to leverage Docker cache
-COPY package.json package-lock.json* ./
+# Install Dependencies
+COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the source code
+# Copy Source Code
 COPY . .
 
-# Build the static site (Vite)
+# Build for Production
+# This runs "vite build" (frontend) and "tsup" (backend)
 RUN npm run build
 
-# Stage 2: Serve with Nginx
-FROM nginx:alpine
+# Environment Setup
+ENV NODE_ENV=production
+ENV PORT=3001
 
-# Remove default Nginx website
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy build artifacts from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start Server
+# The "start" script runs "node dist/server/index.js"
+CMD ["npm", "start"]
