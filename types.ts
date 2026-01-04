@@ -25,6 +25,7 @@ export enum InferenceTier {
 export interface IngestionFile {
   id: string;
   name: string;
+  serverFilename?: string; // Actual filename on server
   type: 'PDF' | 'JSON' | 'CSV' | 'TXT';
   size: string;
   status: 'uploading' | 'processing' | 'embedded' | 'error';

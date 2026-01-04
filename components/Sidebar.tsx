@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, MessageSquare, Database, Server, Settings, Activity, Trophy, Globe, BarChart4, HeartHandshake, Layers, ShieldCheck, Rocket } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Database, Server, Settings, Activity, Trophy, Globe, BarChart4, HeartHandshake, Layers, ShieldCheck, Rocket, Megaphone } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -20,6 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     { id: 'learning', label: 'Learning Hub', icon: Trophy },
     { id: 'knowledge', label: 'Knowledge Base', icon: Database },
     { id: 'settings', label: 'Configuration', icon: Settings },
+    { id: 'campaigns', label: 'Broadcast Ads', icon: Megaphone },
     { id: 'landing', label: 'Public Website', icon: Globe },
   ];
 
@@ -44,11 +45,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                isActive
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
             >
               <Icon size={18} />
               <span className="font-medium text-sm">{item.label}</span>

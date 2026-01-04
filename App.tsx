@@ -13,9 +13,18 @@ import ImpactDonorView from './components/ImpactDonorView';
 import WhiteLabelStudio from './components/WhiteLabelStudio';
 import AccessManagement from './components/AccessManagement';
 import DeploymentChecklist from './components/DeploymentChecklist';
+import Campaigns from './components/Campaigns';
+import PartnerPortal from './components/PartnerPortal/PartnerPortal';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('final');
+  // Simple "routing" state
+  const [isPartnerMode, setIsPartnerMode] = useState(false);
+
+  // If in Partner Mode, show only Partner Portal
+  if (isPartnerMode) {
+    return <PartnerPortal onBack={() => setIsPartnerMode(false)} />;
+  }
 
   const renderContent = () => {
     switch (activeTab) {
@@ -41,8 +50,11 @@ const App: React.FC = () => {
         return <KnowledgeBase />;
       case 'settings':
         return <BotSettings />;
+      case 'campaigns':
+        return <Campaigns />; // Admin view of campaigns
       case 'landing':
-        return <LandingPage onNavigate={setActiveTab} />;
+        // Pass the setter to LandingPage so "Partner Login" can switch mode
+        return <LandingPage onNavigate={setActiveTab} onPartnerLogin={() => setIsPartnerMode(true)} />;
       default:
         return <DeploymentChecklist />;
     }

@@ -19,6 +19,8 @@ model User {
   profile     Profile?
   transactions Transaction[]
   goals       Goal[]
+  reward      Reward?
+  campaignLogs CampaignLog[]
 }
 
 model Profile {
@@ -50,3 +52,73 @@ model Goal {
   currentAmount Float @default(0)
   deadline    DateTime?
 }
+
+// --- Gamification Engine ---
+
+model GameModule {
+  id          String   @id @default(uuid())
+  title       String   
+  rawContent  String   // Original text/content
+  questions   String   // JSON blob of generated questions
+  createdAt   DateTime @default(now())
+}
+
+model GameSession {
+  id          String   @id @default(uuid())
+  userId      String
+  moduleId    String
+  currentStep Int      @default(0)
+  score       Int      @default(0)
+  status      String   // "IN_PROGRESS", "COMPLETED"
+  createdAt   DateTime @default(now())
+}
+
+model Reward {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  points      Int      @default(0)
+  badges      String   // JSON array e.g., ["Saver Badge"]
+}
+
+// --- Broadcast & Ads Engine ---
+
+model Organization {
+  id          String     @id @default(uuid())
+  name        String
+  type        String     // "BANK", "FINTECH", "INSURANCE", "MFI"
+  email       String     @unique
+  password    String     // In production, hash this!
+  status      String     @default("PENDING") // PENDING, APPROVED, REJECTED
+  apiKey      String?    @unique
+  campaigns   Campaign[]
+  branding    String?    // JSON string for WhiteLabel config
+  createdAt   DateTime   @default(now())
+}
+
+model Campaign {
+  id              String     @id @default(uuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  title           String
+  content         String
+  status          String     // "DRAFT", "SCHEDULED", "ACTIVE", "COMPLETED"
+  targetCriteria  String?    // JSON e.g. {"businessType": "Market Trader"}
+  budget          Float      @default(0)
+  spent           Float      @default(0)
+  createdAt       DateTime   @default(now())
+  
+  logs            CampaignLog[]
+}
+
+model CampaignLog {
+  id          String   @id @default(uuid())
+  campaignId  String
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  status      String   // "SENT", "DELIVERED", "READ", "ENGAGED"
+  interaction String?  // User's reply logic
+  timestamp   DateTime @default(now())
+}
+

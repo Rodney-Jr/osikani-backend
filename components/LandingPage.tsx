@@ -9,9 +9,10 @@ import {
 
 interface LandingPageProps {
   onNavigate?: (tab: string) => void;
+  onPartnerLogin?: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin }) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -69,10 +70,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           <button onClick={() => document.getElementById('solution')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Our Solution</button>
           <button onClick={() => document.getElementById('impact')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Impact</button>
         </div>
-        <a href="https://wa.me/233555000000" target="_blank" rel="noreferrer" className="bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-md">
-          <MessageCircle size={18} />
-          <span>Start Chat</span>
-        </a>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onPartnerLogin}
+            className="hidden md:flex text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors"
+          >
+            Partner Login
+          </button>
+          <a href="https://wa.me/233555000000" target="_blank" rel="noreferrer" className="bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-md">
+            <MessageCircle size={18} />
+            <span>Start Chat</span>
+          </a>
+        </div>
       </nav>
 
       {/* Hero Section */}
@@ -255,7 +264,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* 5. Sustainability & Footer */}
+      {/* 5. Partner with Us */}
+      <section className="py-24 px-8 bg-emerald-900 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 bg-emerald-800/50 text-emerald-300 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-700 mb-6">
+            Institutional Partnership
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-black mb-6">Join the Financial Inclusion Revolution.</h2>
+          <p className="text-lg text-emerald-100/80 mb-10 leading-relaxed max-w-2xl mx-auto">
+            Banks, Insurers, and Mobile Money Operators: Integrate your services into Osikani to reach the unbanked with zero acquisition cost.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button className="bg-white text-emerald-900 px-8 py-4 rounded-xl font-bold hover:bg-emerald-50 transition-all flex items-center gap-2 shadow-xl">
+              Partner Registration <ArrowUpRight size={18} />
+            </button>
+            <a href="mailto:partners@osikani.com" className="text-white px-8 py-4 rounded-xl font-bold border border-emerald-700 hover:bg-emerald-800/50 transition-all">
+              Contact Sales
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Sustainability & Footer */}
       <footer className="bg-slate-950 pt-24 pb-12 px-8 text-white border-t border-white/10">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 mb-24">

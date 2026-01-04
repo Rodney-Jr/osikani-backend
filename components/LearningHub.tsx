@@ -105,7 +105,41 @@ const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Never rush. Scammers use panic. Always check your actual balance. If no money came in, it is a fake SMS.'
       }
     ]
-  }
+    ]
+  },
+{
+  id: 'm-tax',
+    title: 'Tax Truths (GRA)',
+      description: 'Understand your civic duties. VAT, Income Tax, and why it matters.',
+        xpReward: 300,
+          completed: false,
+            questions: [
+              {
+                id: 't1',
+                question: 'Who is required to pay Income Tax in Ghana?',
+                options: [
+                  'Only people who work in air-conditioned offices',
+                  'Anyone earning income, including market traders and drivers',
+                  'Only people who voted for the current government',
+                  'Only people with more than 5 children'
+                ],
+                correctAnswer: 1,
+                explanation: 'Income tax laws apply to everyone earning an income, whether from formal employment or self-employment (business).'
+              },
+              {
+                id: 't2',
+                question: 'What is the TIN number used for?',
+                options: [
+                  'To get free food at restaurants',
+                  'To identify you as a taxpayer (Taxpayer Identification Number)',
+                  'It is a lottery number',
+                  'To register for a SIM card only'
+                ],
+                correctAnswer: 1,
+                explanation: 'Your Taxpayer Identification Number (TIN) is your unique ID for all tax-related transactions and official business.'
+              }
+            ]
+}
 ];
 
 const LearningHub: React.FC = () => {
@@ -155,9 +189,9 @@ const LearningHub: React.FC = () => {
       setProfile(prev => {
         const newXP = prev.currentXP + activeModule!.xpReward;
         const leveledUp = newXP >= prev.nextLevelXP;
-        
+
         // Unlock badge for SSNIT module
-        const updatedBadges = prev.badges.map(b => 
+        const updatedBadges = prev.badges.map(b =>
           (b.id === '5' && activeModule!.id === 'm-ssnit') ? { ...b, unlocked: true, unlockedAt: new Date() } : b
         );
 
@@ -193,7 +227,7 @@ const LearningHub: React.FC = () => {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+
         {/* Left Column: Profile & Badges */}
         <div className="space-y-6">
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 relative overflow-hidden">
@@ -204,14 +238,14 @@ const LearningHub: React.FC = () => {
               </div>
               <h3 className="mt-3 font-bold text-xl text-slate-900">{profile.rankTitle}</h3>
               <p className="text-emerald-600 font-medium text-sm">Level {profile.level}</p>
-              
+
               <div className="w-full mt-4">
                 <div className="flex justify-between text-xs font-bold text-slate-500 mb-1">
                   <span>{profile.currentXP} XP</span>
                   <span>{profile.nextLevelXP} XP</span>
                 </div>
                 <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-yellow-400 rounded-full transition-all duration-500"
                     style={{ width: `${(profile.currentXP / profile.nextLevelXP) * 100}%` }}
                   ></div>
@@ -220,18 +254,18 @@ const LearningHub: React.FC = () => {
 
               <div className="flex justify-between w-full mt-6 text-center">
                 <div>
-                   <div className="flex items-center justify-center gap-1 text-slate-800 font-bold">
-                      <Zap size={16} className="text-orange-500 fill-orange-500" />
-                      {profile.streakDays}
-                   </div>
-                   <p className="text-[10px] text-slate-500 uppercase tracking-wide">Day Streak</p>
+                  <div className="flex items-center justify-center gap-1 text-slate-800 font-bold">
+                    <Zap size={16} className="text-orange-500 fill-orange-500" />
+                    {profile.streakDays}
+                  </div>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-wide">Day Streak</p>
                 </div>
                 <div>
-                   <div className="flex items-center justify-center gap-1 text-slate-800 font-bold">
-                      <Star size={16} className="text-yellow-500 fill-yellow-500" />
-                      {profile.badges.filter(b => b.unlocked).length}
-                   </div>
-                   <p className="text-[10px] text-slate-500 uppercase tracking-wide">Badges</p>
+                  <div className="flex items-center justify-center gap-1 text-slate-800 font-bold">
+                    <Star size={16} className="text-yellow-500 fill-yellow-500" />
+                    {profile.badges.filter(b => b.unlocked).length}
+                  </div>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-wide">Badges</p>
                 </div>
               </div>
             </div>
@@ -258,134 +292,133 @@ const LearningHub: React.FC = () => {
 
         <div className="lg:col-span-2">
           {activeModule ? (
-             <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-full flex flex-col">
-                <div className="bg-slate-900 text-white p-6 flex justify-between items-center">
-                  <div>
-                    <h3 className="text-xl font-bold">{activeModule.title}</h3>
-                    <p className="text-slate-400 text-sm">Question {currentQuestionIdx + 1} of {activeModule.questions.length}</p>
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-full flex flex-col">
+              <div className="bg-slate-900 text-white p-6 flex justify-between items-center">
+                <div>
+                  <h3 className="text-xl font-bold">{activeModule.title}</h3>
+                  <p className="text-slate-400 text-sm">Question {currentQuestionIdx + 1} of {activeModule.questions.length}</p>
+                </div>
+                <button onClick={() => setActiveModule(null)} className="text-slate-400 hover:text-white text-sm">
+                  Exit
+                </button>
+              </div>
+
+              {!showResult ? (
+                <div className="p-8 flex-1 flex flex-col justify-center">
+                  <h4 className="text-xl font-medium text-slate-800 mb-8 leading-relaxed">
+                    {activeModule.questions[currentQuestionIdx].question}
+                  </h4>
+                  <div className="space-y-3">
+                    {activeModule.questions[currentQuestionIdx].options.map((option, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleAnswer(idx)}
+                        disabled={isAnswerChecked}
+                        className={`w-full p-4 rounded-xl text-left border-2 transition-all flex justify-between items-center ${isAnswerChecked
+                            ? idx === activeModule.questions[currentQuestionIdx].correctAnswer
+                              ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                              : idx === selectedOption
+                                ? 'border-red-500 bg-red-50 text-red-800'
+                                : 'border-slate-100 text-slate-400'
+                            : selectedOption === idx
+                              ? 'border-indigo-500 bg-indigo-50'
+                              : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                          }`}
+                      >
+                        <span className="font-medium">{option}</span>
+                        {isAnswerChecked && idx === activeModule.questions[currentQuestionIdx].correctAnswer && (
+                          <CheckCircle2 className="text-emerald-500" />
+                        )}
+                      </button>
+                    ))}
                   </div>
-                  <button onClick={() => setActiveModule(null)} className="text-slate-400 hover:text-white text-sm">
-                    Exit
+
+                  {isAnswerChecked && (
+                    <div className="mt-8 animate-in fade-in slide-in-from-bottom-4">
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-blue-900 text-sm mb-4">
+                        <span className="font-bold">Explanation: </span>
+                        {activeModule.questions[currentQuestionIdx].explanation}
+                      </div>
+                      <button
+                        onClick={handleNextQuestion}
+                        className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
+                      >
+                        {currentQuestionIdx === activeModule.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-8 flex-1 flex flex-col items-center justify-center text-center">
+                  <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+                    <Trophy size={48} className="text-yellow-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900">Module Completed!</h3>
+                  <p className="text-slate-500 mt-2">Score: {score}/{activeModule.questions.length}</p>
+                  {score === activeModule.questions.length && (
+                    <div className="mt-6 bg-emerald-100 text-emerald-800 px-6 py-2 rounded-full font-bold flex items-center gap-2 animate-bounce">
+                      +{activeModule.xpReward} XP Earned!
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setActiveModule(null)}
+                    className="mt-8 px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800"
+                  >
+                    Back to Hub
                   </button>
                 </div>
-
-                {!showResult ? (
-                  <div className="p-8 flex-1 flex flex-col justify-center">
-                    <h4 className="text-xl font-medium text-slate-800 mb-8 leading-relaxed">
-                      {activeModule.questions[currentQuestionIdx].question}
-                    </h4>
-                    <div className="space-y-3">
-                      {activeModule.questions[currentQuestionIdx].options.map((option, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(idx)}
-                          disabled={isAnswerChecked}
-                          className={`w-full p-4 rounded-xl text-left border-2 transition-all flex justify-between items-center ${
-                             isAnswerChecked 
-                                ? idx === activeModule.questions[currentQuestionIdx].correctAnswer 
-                                  ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                                  : idx === selectedOption 
-                                    ? 'border-red-500 bg-red-50 text-red-800'
-                                    : 'border-slate-100 text-slate-400'
-                                : selectedOption === idx 
-                                  ? 'border-indigo-500 bg-indigo-50' 
-                                  : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
-                          }`}
-                        >
-                          <span className="font-medium">{option}</span>
-                          {isAnswerChecked && idx === activeModule.questions[currentQuestionIdx].correctAnswer && (
-                            <CheckCircle2 className="text-emerald-500" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-
-                    {isAnswerChecked && (
-                      <div className="mt-8 animate-in fade-in slide-in-from-bottom-4">
-                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-blue-900 text-sm mb-4">
-                          <span className="font-bold">Explanation: </span>
-                          {activeModule.questions[currentQuestionIdx].explanation}
-                        </div>
-                        <button 
-                          onClick={handleNextQuestion}
-                          className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
-                        >
-                          {currentQuestionIdx === activeModule.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
-                          <ChevronRight size={18} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="p-8 flex-1 flex flex-col items-center justify-center text-center">
-                    <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
-                      <Trophy size={48} className="text-yellow-600" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-slate-900">Module Completed!</h3>
-                    <p className="text-slate-500 mt-2">Score: {score}/{activeModule.questions.length}</p>
-                    {score === activeModule.questions.length && (
-                       <div className="mt-6 bg-emerald-100 text-emerald-800 px-6 py-2 rounded-full font-bold flex items-center gap-2 animate-bounce">
-                          +{activeModule.xpReward} XP Earned!
-                       </div>
-                    )}
-                    <button 
-                      onClick={() => setActiveModule(null)}
-                      className="mt-8 px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800"
-                    >
-                      Back to Hub
-                    </button>
-                  </div>
-                )}
-             </div>
+              )}
+            </div>
           ) : (
             <div className="space-y-6">
               <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                 <Target className="text-emerald-500" /> Active Missions
+                <Target className="text-emerald-500" /> Active Missions
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 {QUIZ_MODULES.map(module => (
-                   <div key={module.id} className={`bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col ${module.id === 'm-ssnit' ? 'border-l-4 border-l-blue-500' : ''}`}>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                           {module.id === 'm-ssnit' && <Landmark size={14} className="text-blue-500" />}
-                           <h4 className="font-bold text-lg text-slate-900">{module.title}</h4>
-                        </div>
-                        <p className="text-slate-500 text-sm mt-2">{module.description}</p>
+                {QUIZ_MODULES.map(module => (
+                  <div key={module.id} className={`bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col ${module.id === 'm-ssnit' ? 'border-l-4 border-l-blue-500' : ''}`}>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        {module.id === 'm-ssnit' && <Landmark size={14} className="text-blue-500" />}
+                        <h4 className="font-bold text-lg text-slate-900">{module.title}</h4>
                       </div>
-                      <div className="mt-6 flex items-center justify-between">
-                         <span className="text-xs font-bold bg-yellow-100 text-yellow-700 px-2 py-1 rounded flex items-center gap-1">
-                           <Zap size={12} /> {module.xpReward} XP
-                         </span>
-                         <button 
-                           onClick={() => handleStartModule(module)}
-                           className="text-sm font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-4 py-2 rounded-lg transition-colors"
-                         >
-                           Start Module
-                         </button>
-                      </div>
-                   </div>
-                 ))}
-                 <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 border-dashed flex flex-col items-center justify-center text-center opacity-70">
-                    <Lock size={32} className="text-slate-400 mb-3" />
-                    <h4 className="font-bold text-slate-600">Investment Tycoon</h4>
-                    <p className="text-xs text-slate-400 mt-1">Unlock Level 5 to access</p>
-                 </div>
+                      <p className="text-slate-500 text-sm mt-2">{module.description}</p>
+                    </div>
+                    <div className="mt-6 flex items-center justify-between">
+                      <span className="text-xs font-bold bg-yellow-100 text-yellow-700 px-2 py-1 rounded flex items-center gap-1">
+                        <Zap size={12} /> {module.xpReward} XP
+                      </span>
+                      <button
+                        onClick={() => handleStartModule(module)}
+                        className="text-sm font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-4 py-2 rounded-lg transition-colors"
+                      >
+                        Start Module
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 border-dashed flex flex-col items-center justify-center text-center opacity-70">
+                  <Lock size={32} className="text-slate-400 mb-3" />
+                  <h4 className="font-bold text-slate-600">Investment Tycoon</h4>
+                  <p className="text-xs text-slate-400 mt-1">Unlock Level 5 to access</p>
+                </div>
               </div>
 
               <div className="bg-indigo-900 rounded-2xl p-6 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-800 rounded-full blur-2xl -mr-16 -mt-16"></div>
                 <div className="relative z-10 flex justify-between items-center">
-                   <div>
-                     <h3 className="font-bold text-lg flex items-center gap-2">
-                       <Landmark className="text-indigo-300" /> SSNIT Public Notice
-                     </h3>
-                     <p className="text-indigo-200 text-sm mt-1">Self-employed? Join SEED today for a secure future.</p>
-                   </div>
-                   <div className="text-center bg-white/10 p-3 rounded-lg backdrop-blur-sm">
-                      <span className="block text-2xl font-bold text-yellow-400">SEED</span>
-                      <span className="text-[10px] uppercase tracking-wide opacity-70">Initiative</span>
-                   </div>
+                  <div>
+                    <h3 className="font-bold text-lg flex items-center gap-2">
+                      <Landmark className="text-indigo-300" /> SSNIT Public Notice
+                    </h3>
+                    <p className="text-indigo-200 text-sm mt-1">Self-employed? Join SEED today for a secure future.</p>
+                  </div>
+                  <div className="text-center bg-white/10 p-3 rounded-lg backdrop-blur-sm">
+                    <span className="block text-2xl font-bold text-yellow-400">SEED</span>
+                    <span className="text-[10px] uppercase tracking-wide opacity-70">Initiative</span>
+                  </div>
                 </div>
               </div>
             </div>

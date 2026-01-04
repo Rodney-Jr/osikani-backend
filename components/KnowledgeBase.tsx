@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Upload, FileText, CheckCircle, Clock, Trash2, Search, FileJson, FileSpreadsheet, Download, Loader2, RefreshCw, XCircle, Database, Brain, FileScan } from 'lucide-react';
+import { Upload, FileText, CheckCircle, Clock, Trash2, Search, FileJson, FileSpreadsheet, Download, Loader2, RefreshCw, XCircle, Database, Brain, FileScan, Gamepad2 } from 'lucide-react';
 import { MOCK_FILES } from '../constants';
 import { IngestionFile } from '../types';
 import { GHANA_FINANCIAL_LITERACY_DATASET } from '../data/sampleData';
@@ -7,6 +7,7 @@ import { GHANA_FINANCIAL_LITERACY_DATASET } from '../data/sampleData';
 const KnowledgeBase: React.FC = () => {
   const [files, setFiles] = useState<IngestionFile[]>(MOCK_FILES);
   const [dragActive, setDragActive] = useState(false);
+  const [gamifyingId, setGamifyingId] = useState<string | null>(null);
   const intervalRefs = useRef<{ [key: string]: ReturnType<typeof setInterval> }>({});
 
   // Resume simulation for any existing 'processing' files on mount
@@ -118,6 +119,33 @@ const KnowledgeBase: React.FC = () => {
     setFiles(prev => prev.filter(f => f.id !== id));
   };
 
+  const handleGamify = async (file: IngestionFile) => {
+    if (!file.serverFilename) {
+      alert("Cannot gamify this file (missing server filename).");
+      return;
+    }
+
+    setGamifyingId(file.id);
+    try {
+      const res = await fetch('/api/gamify/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.serverFilename })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`Success! Gamification module "${data.title}" created. ID: ${data.gameId}`);
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to gamify content.");
+    } finally {
+      setGamifyingId(null);
+    }
+  };
+
   const fetchDocuments = async () => {
     try {
       const res = await fetch('/api/rag/documents');
@@ -135,6 +163,7 @@ const KnowledgeBase: React.FC = () => {
           return {
             id: doc.name + index,
             name: displayName,
+            serverFilename: doc.name, // Store real filename
             type: doc.name.split('.').pop()?.toUpperCase() || 'TXT',
             size: doc.size,
             status: 'embedded',
@@ -376,17 +405,35 @@ const KnowledgeBase: React.FC = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        className="text-slate-400 hover:text-red-500 transition-colors"
-                        onClick={() => deleteFile(file.id)}
-                        title={file.status === 'processing' || file.status === 'uploading' ? 'Cancel' : 'Delete'}
-                      >
-                        {(file.status === 'processing' || file.status === 'uploading') ? (
-                          <XCircle size={16} />
-                        ) : (
-                          <Trash2 size={16} />
+                      <div className="flex justify-end gap-2">
+                        {/* Gamify Button */}
+                        {file.status === 'embedded' && (
+                          <button
+                            className="text-purple-500 hover:text-purple-700 hover:bg-purple-50 p-1.5 rounded transition-colors"
+                            onClick={() => handleGamify(file)}
+                            title="Gamify this Content"
+                            disabled={gamifyingId === file.id}
+                          >
+                            {gamifyingId === file.id ? (
+                              <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                              <Gamepad2 size={16} />
+                            )}
+                          </button>
                         )}
-                      </button>
+
+                        <button
+                          className="text-slate-400 hover:text-red-500 transition-colors p-1.5 hover:bg-red-50 rounded"
+                          onClick={() => deleteFile(file.id)}
+                          title={file.status === 'processing' || file.status === 'uploading' ? 'Cancel' : 'Delete'}
+                        >
+                          {(file.status === 'processing' || file.status === 'uploading') ? (
+                            <XCircle size={16} />
+                          ) : (
+                            <Trash2 size={16} />
+                          )}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -23,10 +23,29 @@ app.get('/health', (req, res) => {
 
 import { ragRouter } from './routes/rag';
 import { handleWhatsAppMessage } from './routes/whatsapp';
+import { verifyCloudWebhook, handleCloudMessage } from './routes/whatsapp-cloud';
 
 app.use('/api/rag', ragRouter);
 app.post('/api/chat', generateChatResponse);
+
+// Twilio Adapter
 app.post('/api/whatsapp', handleWhatsAppMessage);
+
+// Meta Cloud API Adapter (Parallel)
+app.get('/api/whatsapp-cloud', verifyCloudWebhook);
+app.post('/api/whatsapp-cloud', handleCloudMessage);
+
+// Gamification
+import { gamificationRouter } from './routes/gamification';
+app.use('/api/gamify', gamificationRouter);
+
+// Campaigns & Broadcasts
+import { campaignRouter } from './routes/campaigns';
+app.use('/api/campaigns', campaignRouter);
+
+// Partner Portal
+import { partnerRouter } from './routes/partner';
+app.use('/api/partner', partnerRouter);
 
 // Static Serving for Production
 import path from 'path';

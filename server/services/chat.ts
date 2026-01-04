@@ -5,6 +5,7 @@ import { searchKnowledgeBase } from './rag';
 import { OSIKANI_SYSTEM_INSTRUCTION } from '../constants';
 import { getOrCreateUser, getUserProfile } from './userService';
 import { logTransaction, checkLoanReadiness, createSavingsGoal } from './toolService';
+import { processGameMove } from './gameEngine'; // Gamification
 
 let client: GoogleGenAI | null = null;
 const getClient = () => {
@@ -93,9 +94,24 @@ export const processUserMessage = async (
 
         if (context) userContext += `\n\n**ADDITIONAL CONTEXT:**\n${context}`;
 
-        // LAYER 1: HARD DLP SCAN
-        securityLogs.push("Shield: Initiating Institutional Security Scan... (Server-Side)");
-        const scan = runSecurityGateway(message || "");
+        // 0. Gamification Interceptor
+        // If the user is in an active game session, the Game Engine takes over.
+        try {
+            const gameResponse = await processGameMove(phoneNumber, message);
+            if (gameResponse) {
+                return {
+                    text: gameResponse,
+                    confidence: 1,
+                    securityLogs: ["Game Engine: Active Session handled response."]
+                };
+            }
+        } catch (e) {
+            console.warn("Game Engine skipped (DB not ready?)");
+        }
+
+        // LAYER 1: SECURITY GATEWAY
+        const scan = await runSecurityGateway(message, audioData);
+        const securityLogs = [...scan.logs];
 
         if (!scan.isSafe) {
             securityLogs.push(`🛑 BLOCK: ${scan.threatsDetected.join(", ")}`);
