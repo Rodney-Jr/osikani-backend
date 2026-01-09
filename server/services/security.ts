@@ -11,6 +11,7 @@ export interface SecurityScanResult {
     confidenceScore: number;
     severity: 'low' | 'medium' | 'high';
     isSemanticScanRequired: boolean;
+    logs: string[];
 }
 
 /**
@@ -56,9 +57,15 @@ export const scanForInjections = (text: string): string[] => {
 /**
  * PRIMARY SECURITY GATEWAY
  */
-export const runSecurityGateway = (userInput: string): SecurityScanResult => {
+export const runSecurityGateway = async (userInput: string, audioData?: string | null): Promise<SecurityScanResult> => {
+    const logs: string[] = [];
+    logs.push("Security Scan Initiated");
+
     const threats = scanForInjections(userInput);
+    if (threats.length > 0) logs.push(`Threats found: ${threats.length}`);
+
     const redacted = redactPII(userInput);
+    if (redacted !== userInput) logs.push("PII Redacted");
 
     // Heuristic patterns for MoMo fraud detection
     const hasUrgency = /urgent|block|immediately|withdraw|pin|password/i.test(userInput);
@@ -68,13 +75,16 @@ export const runSecurityGateway = (userInput: string): SecurityScanResult => {
     const isSafe = threats.length === 0;
     const severity = threats.length > 0 ? 'high' : (hasUrgency && hasFakeId ? 'medium' : 'low');
 
+    logs.push(`Scan Complete. Safe: ${isSafe}, Severity: ${severity}`);
+
     return {
         isSafe,
         redactedText: redacted,
         threatsDetected: threats,
         confidenceScore: hasUrgency && hasFakeId ? 92 : 65,
         severity,
-        isSemanticScanRequired: hasUrgency || hasObfuscation
+        isSemanticScanRequired: hasUrgency || hasObfuscation,
+        logs
     };
 };
 

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Trophy, Star, Target, Zap, Shield, TrendingUp, Award, CheckCircle2, XCircle, ChevronRight, Lock, Landmark } from 'lucide-react';
+import { Trophy, Star, Target, Zap, Shield, TrendingUp, Award, CheckCircle2, XCircle, ChevronRight, Lock, Landmark, ChevronLeft } from 'lucide-react';
 import { UserProfile, QuizModule, Badge } from '../types';
 
 // Mock Data for Gamification
@@ -105,44 +105,48 @@ const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Never rush. Scammers use panic. Always check your actual balance. If no money came in, it is a fake SMS.'
       }
     ]
-    ]
   },
-{
-  id: 'm-tax',
+  {
+    id: 'm-tax',
     title: 'Tax Truths (GRA)',
-      description: 'Understand your civic duties. VAT, Income Tax, and why it matters.',
-        xpReward: 300,
-          completed: false,
-            questions: [
-              {
-                id: 't1',
-                question: 'Who is required to pay Income Tax in Ghana?',
-                options: [
-                  'Only people who work in air-conditioned offices',
-                  'Anyone earning income, including market traders and drivers',
-                  'Only people who voted for the current government',
-                  'Only people with more than 5 children'
-                ],
-                correctAnswer: 1,
-                explanation: 'Income tax laws apply to everyone earning an income, whether from formal employment or self-employment (business).'
-              },
-              {
-                id: 't2',
-                question: 'What is the TIN number used for?',
-                options: [
-                  'To get free food at restaurants',
-                  'To identify you as a taxpayer (Taxpayer Identification Number)',
-                  'It is a lottery number',
-                  'To register for a SIM card only'
-                ],
-                correctAnswer: 1,
-                explanation: 'Your Taxpayer Identification Number (TIN) is your unique ID for all tax-related transactions and official business.'
-              }
-            ]
-}
+    description: 'Understand your civic duties. VAT, Income Tax, and why it matters.',
+    xpReward: 300,
+    completed: false,
+    questions: [
+      {
+        id: 't1',
+        question: 'Who is required to pay Income Tax in Ghana?',
+        options: [
+          'Only people who work in air-conditioned offices',
+          'Anyone earning income, including market traders and drivers',
+          'Only people who voted for the current government',
+          'Only people with more than 5 children'
+        ],
+        correctAnswer: 1,
+        explanation: 'Income tax laws apply to everyone earning an income, whether from formal employment or self-employment (business).'
+      },
+      {
+        id: 't2',
+        question: 'What is the TIN number used for?',
+        options: [
+          'To get free food at restaurants',
+          'To identify you as a taxpayer (Taxpayer Identification Number)',
+          'It is a lottery number',
+          'To register for a SIM card only'
+        ],
+        correctAnswer: 1,
+        explanation: 'Your Taxpayer Identification Number (TIN) is your unique ID for all tax-related transactions and official business.'
+      }
+    ]
+  }
 ];
 
-const LearningHub: React.FC = () => {
+interface LearningHubProps {
+  isGuest?: boolean;
+  onBack?: () => void;
+}
+
+const LearningHub: React.FC<LearningHubProps> = ({ isGuest = false, onBack }) => {
   const [profile, setProfile] = useState<UserProfile>(INITIAL_PROFILE);
   const [activeModule, setActiveModule] = useState<QuizModule | null>(null);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -216,14 +220,24 @@ const LearningHub: React.FC = () => {
 
   return (
     <div className="p-8 max-w-6xl mx-auto min-h-screen">
-      <header className="mb-8">
-        <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
-          <Trophy className="text-yellow-500" />
-          Osikani Learning Hub
-        </h2>
-        <p className="text-slate-600 mt-2">
-          Gamified financial literacy. Learn, earn XP, and become an Osikani.
-        </p>
+      <header className="mb-8 flex justify-between items-center">
+        <div>
+          <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
+            <Trophy className="text-yellow-500" />
+            Osikani Learning Hub
+          </h2>
+          <p className="text-slate-600 mt-2">
+            Gamified financial literacy. Learn, earn XP, and become an Osikani.
+          </p>
+        </div>
+        {isGuest && onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-500 hover:text-emerald-600 font-bold transition-colors"
+          >
+            <ChevronLeft size={20} /> Back to Home
+          </button>
+        )}
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -315,14 +329,14 @@ const LearningHub: React.FC = () => {
                         onClick={() => handleAnswer(idx)}
                         disabled={isAnswerChecked}
                         className={`w-full p-4 rounded-xl text-left border-2 transition-all flex justify-between items-center ${isAnswerChecked
-                            ? idx === activeModule.questions[currentQuestionIdx].correctAnswer
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                              : idx === selectedOption
-                                ? 'border-red-500 bg-red-50 text-red-800'
-                                : 'border-slate-100 text-slate-400'
-                            : selectedOption === idx
-                              ? 'border-indigo-500 bg-indigo-50'
-                              : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                          ? idx === activeModule.questions[currentQuestionIdx].correctAnswer
+                            ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                            : idx === selectedOption
+                              ? 'border-red-500 bg-red-50 text-red-800'
+                              : 'border-slate-100 text-slate-400'
+                          : selectedOption === idx
+                            ? 'border-indigo-500 bg-indigo-50'
+                            : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
                           }`}
                       >
                         <span className="font-medium">{option}</span>
@@ -361,12 +375,34 @@ const LearningHub: React.FC = () => {
                       +{activeModule.xpReward} XP Earned!
                     </div>
                   )}
-                  <button
-                    onClick={() => setActiveModule(null)}
-                    className="mt-8 px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800"
-                  >
-                    Back to Hub
-                  </button>
+
+                  {isGuest && (
+                    <div className="mt-8 bg-indigo-50 border border-indigo-100 p-6 rounded-2xl max-w-sm">
+                      <h4 className="font-bold text-indigo-900 mb-2">Don't lose your progress! 😲</h4>
+                      <p className="text-sm text-indigo-700 mb-4">Create a free Osikani account to save your badges and climb the leaderboard.</p>
+                      <button className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-md">
+                        Create Free Account
+                      </button>
+                    </div>
+                  )}
+
+                  {!isGuest && (
+                    <button
+                      onClick={() => setActiveModule(null)}
+                      className="mt-8 px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800"
+                    >
+                      Back to Hub
+                    </button>
+                  )}
+
+                  {isGuest && (
+                    <button
+                      onClick={() => setActiveModule(null)}
+                      className="mt-4 text-sm text-slate-400 hover:text-slate-600 underline"
+                    >
+                      Continue as Guest
+                    </button>
+                  )}
                 </div>
               )}
             </div>

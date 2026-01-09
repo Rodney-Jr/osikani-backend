@@ -69,6 +69,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
           <button onClick={() => document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">The Problem</button>
           <button onClick={() => document.getElementById('solution')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Our Solution</button>
           <button onClick={() => document.getElementById('impact')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Impact</button>
+          <button
+            onClick={() => onNavigate && onNavigate('learning')}
+            className="text-emerald-600 uppercase tracking-widest text-[11px] font-bold border border-emerald-200 px-3 py-1 rounded-full hover:bg-emerald-50 transition-all flex items-center gap-1"
+          >
+            <BookOpen size={12} /> Learning Hub
+          </button>
         </div>
         <div className="flex items-center gap-4">
           <button

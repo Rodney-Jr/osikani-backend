@@ -111,7 +111,7 @@ export const processUserMessage = async (
 
         // LAYER 1: SECURITY GATEWAY
         const scan = await runSecurityGateway(message, audioData);
-        const securityLogs = [...scan.logs];
+        const securityLogs = scan.logs ? [...scan.logs] : [];
 
         if (!scan.isSafe) {
             securityLogs.push(`🛑 BLOCK: ${scan.threatsDetected.join(", ")}`);

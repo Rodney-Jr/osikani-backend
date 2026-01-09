@@ -20,11 +20,26 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('final');
   // Simple "routing" state
   const [isPartnerMode, setIsPartnerMode] = useState(false);
+  const [isGuestMode, setIsGuestMode] = useState(false);
 
   // If in Partner Mode, show only Partner Portal
   if (isPartnerMode) {
     return <PartnerPortal onBack={() => setIsPartnerMode(false)} />;
   }
+
+  const handleLandingNavigation = (tab: string) => {
+    setActiveTab(tab);
+    if (tab === 'learning') {
+      setIsGuestMode(true);
+    } else {
+      setIsGuestMode(false);
+    }
+  };
+
+  const activeTabHandler = (tab: string) => {
+    setActiveTab(tab);
+    setIsGuestMode(false); // Reset guest mode when using sidebar
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -45,7 +60,7 @@ const App: React.FC = () => {
       case 'chat':
         return <ChatSimulator />;
       case 'learning':
-        return <LearningHub />;
+        return <LearningHub isGuest={isGuestMode} onBack={() => handleLandingNavigation('landing')} />;
       case 'knowledge':
         return <KnowledgeBase />;
       case 'settings':
@@ -54,16 +69,18 @@ const App: React.FC = () => {
         return <Campaigns />; // Admin view of campaigns
       case 'landing':
         // Pass the setter to LandingPage so "Partner Login" can switch mode
-        return <LandingPage onNavigate={setActiveTab} onPartnerLogin={() => setIsPartnerMode(true)} />;
+        return <LandingPage onNavigate={handleLandingNavigation} onPartnerLogin={() => setIsPartnerMode(true)} />;
       default:
         return <DeploymentChecklist />;
     }
   };
 
+  const showSidebar = !isGuestMode && activeTab !== 'landing';
+
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className={`flex-1 ml-64 overflow-auto ${activeTab === 'landing' ? 'p-0' : ''}`}>
+      {showSidebar && <Sidebar activeTab={activeTab} setActiveTab={activeTabHandler} />}
+      <main className={`flex-1 overflow-auto ${showSidebar ? 'ml-64' : 'p-0 w-full'}`}>
         {renderContent()}
       </main>
     </div>
