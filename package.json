@@ -3,16 +3,20 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+
   "scripts": {
     "dev:client": "vite",
     "dev:server": "tsx server/index.ts",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+
     "build:client": "vite build --outDir dist/client",
-    "build:server": "tsup server/index.ts --format cjs-dir dist/server",
+    "build:server": "tsup server/index.ts --format cjs --out-dir dist/server",
     "build": "npm run build:client && npm run build:server",
+
     "start": "node dist/server/index.cjs",
     "preview": "vite preview"
   },
+
   "dependencies": {
     "@google/genai": "^1.33.0",
     "@lancedb/lancedb": "^0.23.0",
@@ -31,6 +35,7 @@
     "twilio": "^5.11.1",
     "uuid": "^13.0.0"
   },
+
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
