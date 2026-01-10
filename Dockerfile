@@ -18,5 +18,5 @@ RUN npm run build
 ENV NODE_ENV=production
 ENV PORT=3001
 
-# ✅ Run migrations ONLY at runtime (Railway network available)
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+# 🚨 Explicit shell + explicit commands (prevents pid1 error)
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/server/index.js"]
