@@ -2,8 +2,7 @@
 FROM node:20-alpine
 
 # Install OpenSSL (REQUIRED for Prisma)
-RUN apt-get update && apt-get install -y openssl \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache openssl libc6-compat
   
 # Working Directory
 WORKDIR /app
