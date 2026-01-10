@@ -3,7 +3,7 @@ FROM node:20-alpine
 
 # Install OpenSSL (REQUIRED for Prisma)
 RUN apk add --no-cache openssl libc6-compat
-  
+
 # Working Directory
 WORKDIR /app
 
@@ -14,8 +14,10 @@ RUN npm ci
 # Copy Source Code
 COPY . .
 
+# 🔑 Generate Prisma Client (REQUIRED)
+RUN npx prisma generate
+
 # Build for Production
-# This runs "vite build" (frontend) and "tsup" (backend)
 RUN npm run build
 
 # Environment Setup
@@ -23,5 +25,4 @@ ENV NODE_ENV=production
 ENV PORT=3001
 
 # Start Server
-# The "start" script runs "node dist/server/index.js"
 CMD ["npm", "start"]
