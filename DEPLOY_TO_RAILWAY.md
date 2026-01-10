@@ -104,3 +104,18 @@ We need to ensure Prisma migrations run *before* the app starts.
 4.  Click **Verify and Save**.
 
 ✅ **Done! Your Osikani instance is now live on the global edge network.**
+
+---
+
+## 🆘 Troubleshooting
+
+### Database Migration Failed (P3009)
+If you see an error like `P3009: migrate found failed migrations`, you need to reset the database using the **Public Connection URL**.
+
+1.  Get the **Public URL** from Railway -> Postgres -> Connect.
+2.  Run this locally:
+    ```bash
+    # Windows PowerShell
+    $env:DATABASE_URL="postgresql://..."; npx prisma migrate reset --force
+    ```
+
