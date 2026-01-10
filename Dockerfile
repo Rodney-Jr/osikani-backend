@@ -15,4 +15,5 @@ RUN npm run build
 ENV NODE_ENV=production
 ENV PORT=3001
 
-CMD ["npm", "run", "start"]
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/server/index.cjs"]
+
