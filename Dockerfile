@@ -1,24 +1,19 @@
-# Base Image
 FROM node:20-alpine
 
-# Working Directory
+RUN apk add --no-cache openssl libc6-compat
+
 WORKDIR /app
 
-# Install Dependencies
 COPY package*.json ./
 RUN npm ci
 
-# Copy Source Code
 COPY . .
 
-# Build for Production
-# This runs "vite build" (frontend) and "tsup" (backend)
+RUN npx prisma generate
 RUN npm run build
 
-# Environment Setup
 ENV NODE_ENV=production
 ENV PORT=3001
 
-# Start Server
-# The "start" script runs "node dist/server/index.js"
-CMD ["npm", "start"]
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/server/index.cjs"]
+
