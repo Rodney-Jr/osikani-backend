@@ -17,7 +17,7 @@ import Campaigns from './components/Campaigns';
 import PartnerPortal from './components/PartnerPortal/PartnerPortal';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('final');
+  const [activeTab, setActiveTab] = useState('landing');
   // Simple "routing" state
   const [isPartnerMode, setIsPartnerMode] = useState(false);
   const [isGuestMode, setIsGuestMode] = useState(false);

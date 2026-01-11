@@ -107,6 +107,16 @@ We need to ensure Prisma migrations run *before* the app starts.
 
 ---
 
+## 📱 Step 8: Verify & Test
+1.  Open WhatsApp on your phone.
+2.  Send a message (e.g., "Hello" or "Menu") to your **WhatsApp Business Test Number**.
+3.  Check your **Railway Logs**:
+    *   You should see `📩 Cloud API Message from ...`
+    *   Followed by `🤖 AI Response generated...`
+
+
+---
+
 ## 🆘 Troubleshooting
 
 ### Database Migration Failed (P3009)
