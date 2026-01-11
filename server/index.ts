@@ -51,8 +51,10 @@ app.use('/api/partner', partnerRouter);
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __thisFilename = fileURLToPath(import.meta.url);
+const __thisDirname = path.dirname(__thisFilename);
+// In CJS (production), __dirname is global. In ESM (dev), we derive it.
+const __dirname = typeof globalThis.__dirname === 'string' ? globalThis.__dirname : __thisDirname;
 
 if (process.env.NODE_ENV === 'production') {
     const clientDistPath = path.join(__dirname, '../client');
