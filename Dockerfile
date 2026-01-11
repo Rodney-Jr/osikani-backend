@@ -35,4 +35,4 @@ ENV NODE_ENV=production
 ENV PORT=3001
 
 # Run migrations and start the server
-CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/server/index.cjs"]
+CMD ["npm", "start"]
