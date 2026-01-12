@@ -6,6 +6,7 @@ import LandingPage from './components/LandingPage';
 import AdminLogin from './components/AdminLogin';
 import DashboardLayout from './components/DashboardLayout';
 import PartnerPortal from './components/PartnerPortal/PartnerPortal';
+import ImpactDonorView from './components/ImpactDonorView';
 
 // Protected Route Wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -39,6 +40,7 @@ const App: React.FC = () => {
 
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/partner" element={<PartnerWrapper />} />
+          <Route path="/impact" element={<ImpactDonorView />} />
 
           <Route path="/dashboard/*" element={
             <ProtectedRoute>

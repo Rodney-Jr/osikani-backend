@@ -70,7 +70,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
         <div className="hidden md:flex gap-8 text-sm font-bold text-slate-500">
           <button onClick={() => document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">The Problem</button>
           <button onClick={() => document.getElementById('solution')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Our Solution</button>
-          <button onClick={() => document.getElementById('impact')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Impact</button>
+          <button onClick={() => window.location.href = '/impact'} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Impact</button>
           <button
             onClick={() => onNavigate && onNavigate('learning')}
             className="text-emerald-600 uppercase tracking-widest text-[11px] font-bold border border-emerald-200 px-3 py-1 rounded-full hover:bg-emerald-50 transition-all flex items-center gap-1"
@@ -112,7 +112,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
               <a href="#solution" className="bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-emerald-500 transition-all flex items-center gap-2 shadow-xl shadow-emerald-900/20">
                 Explore Solution <ChevronRight size={20} />
               </a>
-              <button onClick={() => document.getElementById('impact')?.scrollIntoView({ behavior: 'smooth' })} className="text-white px-8 py-4 rounded-2xl font-bold border border-white/20 hover:bg-white/10 transition-all">
+              <button onClick={() => window.location.href = '/impact'} className="text-white px-8 py-4 rounded-2xl font-bold border border-white/20 hover:bg-white/10 transition-all">
                 View Impact Metrics
               </button>
             </div>
