@@ -6,6 +6,7 @@ import {
   PlayCircle, Star, ShieldCheck, Landmark, QrCode, GraduationCap, ArrowUpRight,
   Download, BarChart3, Briefcase, ChevronLeft, Volume2, Trophy, Zap, PieChart, Coins
 } from 'lucide-react';
+import OsikaniWidget from './OsikaniWidget';
 
 interface LandingPageProps {
   onNavigate?: (tab: string) => void;
@@ -327,6 +328,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
           </div>
         </div>
       </footer>
+      <OsikaniWidget />
     </div>
   );
 };
