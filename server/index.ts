@@ -65,6 +65,11 @@ if (process.env.NODE_ENV === 'production') {
 
 
 // Start Server
-app.listen(PORT, () => {
-    console.log(`✅ Osikani BFF running on modified port ${PORT}`);
+// Start Server
+const server = app.listen(Number(PORT), '0.0.0.0', () => {
+    console.log(`✅ Osikani BFF running on port ${PORT}`);
+});
+
+server.on('error', (err) => {
+    console.error('❌ Server failed to start:', err);
 });
