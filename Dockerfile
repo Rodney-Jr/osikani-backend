@@ -35,4 +35,4 @@ ENV NODE_ENV=production
 ENV PORT=3001
 
 # Run migrations and start the server
-CMD ["npm", "start"]
+CMD ["/bin/sh", "-c", "ls -R dist && npm start"]
