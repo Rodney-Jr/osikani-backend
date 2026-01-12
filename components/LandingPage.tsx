@@ -181,26 +181,52 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
         </div>
       </section>
 
-      {/* 2. Project Overview & Beneficiaries */}
+      {/* 2. About Osikani (The 68% Benefit) */}
       <section id="solution" className="py-32 px-8 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-7xl mx-auto text-center mb-20">
-          <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-200 mb-6">Project Overview</div>
-          <h2 className="text-4xl font-black text-slate-900 mb-4">Meet Osikani.</h2>
-          <p className="max-w-3xl mx-auto text-xl text-slate-600">
-            A digital solution that embeds financial education into daily money decisions.
-            We verify understanding, not just attendance.
-          </p>
-        </div>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-200 mb-6">About the Platform</div>
+              <h2 className="text-4xl font-black text-slate-900 mb-6 leading-tight">More than an App.<br /> It's <span className="text-emerald-600">Inclusion Infrastructure.</span></h2>
+              <p className="text-lg text-slate-600 leading-relaxed mb-6">
+                <b>Osikani</b> is a Voice-First AI Financial Companion built specifically for the <b>68% of Ghanaians</b> who are excluded from the formal economy due to illiteracy and complexity barriers.
+              </p>
+              <p className="text-lg text-slate-600 leading-relaxed mb-8">
+                Traditional banking requires you to read forms and understand complex terms. Osikani changes the game by allowing market traders, farmers, and artisans to manage their finances using <b>local dialects</b> (Twi, Ga, Hausa, Pidgin) via a simple WhatsApp chat.
+              </p>
 
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-8">
-          {beneficiaries.map((b, i) => (
-            <div key={i} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm text-center">
-              <div className="w-12 h-12 mx-auto bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6">
-                <Users size={24} />
+              <div className="flex flex-col gap-4">
+                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-4">
+                  <div className="bg-emerald-100 text-emerald-700 p-2 rounded-lg"><Volume2 size={24} /></div>
+                  <div>
+                    <h4 className="font-bold text-slate-900">Voice-First Interface</h4>
+                    <p className="text-sm text-slate-500">We replaced "Reading & Typing" with "Speaking & Listening". If you can send a voice note, you can use Osikani.</p>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-4">
+                  <div className="bg-emerald-100 text-emerald-700 p-2 rounded-lg"><Shield size={24} /></div>
+                  <div>
+                    <h4 className="font-bold text-slate-900">Guardianship Logic</h4>
+                    <p className="text-sm text-slate-500">The AI proactively alerts users to MoMo fraud and unsafe spending, acting as a digital financial guardian.</p>
+                  </div>
+                </div>
               </div>
-              <p className="font-bold text-slate-900">{b}</p>
             </div>
-          ))}
+
+            <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-lg">
+              <h3 className="font-bold text-slate-900 mb-8 border-b border-slate-100 pb-4">Who is this for?</h3>
+              <div className="grid grid-cols-1 gap-4">
+                {beneficiaries.map((b, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50 transition-colors cursor-default group">
+                    <div className="w-10 h-10 bg-white text-emerald-600 rounded-full flex items-center justify-center border border-slate-200 group-hover:border-emerald-200 shadow-sm">
+                      <Users size={18} />
+                    </div>
+                    <p className="font-bold text-slate-700 group-hover:text-emerald-800 transition-colors">{b}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
