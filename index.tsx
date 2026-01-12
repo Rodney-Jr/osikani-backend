@@ -6,6 +6,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './index.css';
 
 // Ensure the root container exists in the index.html before attempting to mount
 const rootElement = document.getElementById('root');

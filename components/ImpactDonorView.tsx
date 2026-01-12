@@ -117,6 +117,65 @@ const ImpactDonorView: React.FC = () => {
         ))}
       </div>
 
+      {/* SDG Deep Dive Table */}
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 mb-12">
+        <h4 className="font-bold text-slate-800 mb-6 flex items-center gap-2">
+          <BookOpen size={18} className="text-emerald-600" />
+          Strategic Alignment Deep Dive
+        </h4>
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-[1fr_3fr] gap-4 border-b border-slate-100 pb-4">
+            <div className="font-bold text-slate-900 flex items-center gap-2">
+              <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">SDG 1</span>
+              No Poverty
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              By targeting the "poverty premium" and preventing wealth erosion through scams, Osikani protects the meagre capital of the most vulnerable. The 'Chop vs Seed' module directly combats consumption-driven poverty cycles by distinguishing business capital from personal spending.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-[1fr_3fr] gap-4 border-b border-slate-100 pb-4">
+            <div className="font-bold text-slate-900 flex items-center gap-2">
+              <span className="bg-red-700 text-white text-xs font-bold px-2 py-1 rounded">SDG 4</span>
+              Quality Education
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Functional literacy is a prerequisite for economic participation. Osikani delivers "Just-in-Time" financial education in local dialects (Twi, Ga, Pidgin), bypassing the barriers of formal classroom settings and English proficiency to reach the 68% illiterate demographic.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-[1fr_3fr] gap-4 border-b border-slate-100 pb-4">
+            <div className="font-bold text-slate-900 flex items-center gap-2">
+              <span className="bg-red-800 text-white text-xs font-bold px-2 py-1 rounded">SDG 8</span>
+              Decent Work & Growth
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              For the 80% of Ghanaians in the informal sector, scaling a business is impossible without separation of accounts. The SMSE Tracker validates cash flow, creating a "digital footprint" that makes these micro-enterprises credit-worthy and bankable.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-[1fr_3fr] gap-4 border-b border-slate-100 pb-4">
+            <div className="font-bold text-slate-900 flex items-center gap-2">
+              <span className="bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded">SDG 10</span>
+              Reduced Inequality
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Traditional banking interfaces exclude the illiterate. Our Voice-First AI interface is a technological equalizer, giving a Kayayo (market porter) the same quality of financial advice and fraud protection as a corporate professional.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-[1fr_3fr] gap-4 pb-2">
+            <div className="font-bold text-slate-900 flex items-center gap-2">
+              <span className="bg-blue-700 text-white text-xs font-bold px-2 py-1 rounded">SDG 16</span>
+              Strong Institutions
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Tax compliance and civic duty are often low due to complexity. Osikani simplifies GRA tax laws and compliance requirements, fostering a culture of civic responsibility and strengthening public trust in financial institutions.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Main Impact Viz */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <div className="lg:col-span-2 bg-slate-900 text-white p-8 rounded-[2.5rem] relative overflow-hidden shadow-xl">
