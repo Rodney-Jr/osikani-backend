@@ -68,6 +68,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
           <span className="font-bold text-xl text-slate-900 tracking-tight">Osikani 🇬🇭</span>
         </div>
         <div className="hidden md:flex gap-8 text-sm font-bold text-slate-500">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Home</button>
           <button onClick={() => document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">The Problem</button>
           <button onClick={() => document.getElementById('solution')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Our Solution</button>
           <button onClick={() => window.location.href = '/impact'} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Impact</button>
