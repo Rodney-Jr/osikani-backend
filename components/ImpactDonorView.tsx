@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Globe, Target, Users, ShieldCheck, TrendingUp, Award, Download, ArrowUpRight, BarChart3, BookOpen, Landmark, Briefcase, GraduationCap } from 'lucide-react';
+import { Heart, Globe, Target, Users, ShieldCheck, TrendingUp, Award, Download, ArrowUpRight, BarChart3, BookOpen, Landmark, Briefcase, GraduationCap, ChevronLeft } from 'lucide-react';
 
 const ImpactDonorView: React.FC = () => {
   const sdgs = [
@@ -50,6 +50,12 @@ const ImpactDonorView: React.FC = () => {
     <div className="p-8 max-w-6xl mx-auto pb-20">
       <header className="mb-10 flex justify-between items-end">
         <div>
+          <button
+            onClick={() => window.location.href = '/'}
+            className="mb-4 flex items-center gap-2 text-slate-500 hover:text-emerald-600 transition-colors font-bold text-sm uppercase tracking-widest"
+          >
+            <ChevronLeft size={16} /> Back to Home
+          </button>
           <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
             <Award className="text-emerald-600" />
             Impact & Sustainability Dashboard
