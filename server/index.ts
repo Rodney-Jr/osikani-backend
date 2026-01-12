@@ -7,6 +7,14 @@ import { generateChatResponse } from './routes/chat';
 dotenv.config({ path: '.env.local' });
 dotenv.config();
 
+// Debugging: Catch silent crashes
+process.on('uncaughtException', (err) => {
+    console.error('❌ Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
