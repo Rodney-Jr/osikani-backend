@@ -27,7 +27,7 @@ RUN DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/db" npm ru
 # ... (rest of the file) 
 # Generate Prisma Client and build the app
 RUN npx prisma generate
-RUN npm run build
+RUN npm run build && ls -R dist
 
 
 
