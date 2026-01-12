@@ -10,7 +10,7 @@
     "build:client": "vite build --outDir dist/client",
     "build:server": "tsup server/index.ts --format cjs --shims --out-dir dist/server",
     "build": "npm run build:client && npm run build:server",
-    "start": "node dist/server/index.cjs",
+    "start": "npx prisma migrate deploy && node dist/server/index.cjs",
     "preview": "vite preview"
   },
   "dependencies": {
