@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { requestPartnerAccount, loginPartner, getPartnerProfile, getAllPartners, updatePartnerStatus, updatePartnerBranding } from '../services/partnerService';
+import { requestPartnerAccount, getPartnerProfile, getAllPartners, updatePartnerStatus, updatePartnerBranding } from '../services/partnerService';
+import { loginPartner } from '../services/authService';
+import { authenticateToken, requireAdmin } from '../middleware/auth';
 
 const router = Router();
 
@@ -18,8 +20,8 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        const org = await loginPartner(email, password);
-        res.json({ message: "Login successful", token: "mock_token_" + org.id, org });
+        const { token, org } = await loginPartner(email, password);
+        res.json({ message: "Login successful", token, org });
     } catch (e: any) {
         res.status(401).json({ error: e.message });
     }
@@ -51,8 +53,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Admin Routes (Unprotected for Demo)
-router.get('/admin/list', async (req, res) => {
+// Admin Routes (Protected)
+router.get('/admin/list', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const partners = await getAllPartners();
         res.json(partners);
@@ -61,7 +63,7 @@ router.get('/admin/list', async (req, res) => {
     }
 });
 
-router.post('/admin/approve', async (req, res) => {
+router.post('/admin/approve', authenticateToken, requireAdmin, async (req, res) => {
     const { id, status } = req.body;
     try {
         const org = await updatePartnerStatus(id, status || 'APPROVED');

@@ -87,7 +87,7 @@ model Reward {
 model Organization {
   id          String     @id @default(uuid())
   name        String
-  type        String     // "BANK", "FINTECH", "INSURANCE", "MFI"
+  type        String     // "BANK", "FINTECH", "INSURANCE", "MFI", "ADMIN"
   email       String     @unique
   password    String     // In production, hash this!
   status      String     @default("PENDING") // PENDING, APPROVED, REJECTED
