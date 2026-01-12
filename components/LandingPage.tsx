@@ -320,10 +320,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
             </div>
           </div>
 
-          <div className="border-t border-white/10 pt-12 text-center">
+          <div className="border-t border-white/10 pt-12 text-center flex flex-col items-center gap-4">
             <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">
               &copy; 2025 Osikani. Nexus Technologies Limited.
             </p>
+            <button
+              onClick={() => onNavigate && onNavigate('dashboard')}
+              className="text-slate-800 hover:text-emerald-600 transition-colors opacity-50 hover:opacity-100 p-2"
+              title="Platform Owner Access"
+            >
+              <Shield size={14} />
+            </button>
           </div>
         </div>
       </footer>
