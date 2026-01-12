@@ -61,7 +61,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
   return (
     <div className="bg-white min-h-screen font-sans overflow-x-hidden text-slate-900">
       {/* Navbar */}
-      <nav className="border-b border-gray-100 py-4 px-8 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-sm z-50 h-20">
+      {/* Navbar - Floating Island */}
+      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl bg-white/90 backdrop-blur-md shadow-2xl rounded-full py-3 px-6 flex justify-between items-center z-50 border border-white/20 transition-all hover:shadow-emerald-900/10">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-200">O</div>
           <span className="font-bold text-xl text-slate-900 tracking-tight">Osikani 🇬🇭</span>
