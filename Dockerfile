@@ -1,7 +1,7 @@
-FROM node:20-alpine
+FROM node:20-slim
 
-# Install necessary binaries for Prisma and Alpine
-RUN apk add --no-cache openssl libc6-compat
+# Install necessary binaries for Prisma/OpenSSL
+RUN apt-get update -y && apt-get install -y openssl ca-certificates
 
 WORKDIR /app
 
