@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -134,7 +134,7 @@ model Subscription {
   id          String           @id @default(uuid())
   userId      String           @unique
   user        User             @relation(fields: [userId], references: [id])
-  tier        String           @default("BASIC") // SubscriptionTier
+  tier        SubscriptionTier @default(BASIC) // SubscriptionTier
   startDate   DateTime         @default(now())
   endDate     DateTime?        // Null = Lifetime/Indefinite (or ongoing)
   isActive    Boolean          @default(true)
@@ -142,17 +142,30 @@ model Subscription {
   updatedAt   DateTime         @updatedAt
 }
 
+enum SubscriptionTier {
+  BASIC
+  PLUS
+  PRO
+}
+
 model Product {
   id          String      @id @default(uuid())
   title       String
   description String
   price       Float
-  type        String      // ProductType
+  type        ProductType      // ProductType
   downloadUrl String?     // Link to PDF/Tool
   imageUrl    String?     // Cover image
   isActive    Boolean     @default(true)
   createdAt   DateTime    @default(now())
   purchases   Purchase[]
+}
+
+enum ProductType {
+  EBOOK
+  TOOL
+  COURSE
+  MODULE
 }
 
 model Purchase {

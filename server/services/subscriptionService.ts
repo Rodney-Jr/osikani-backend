@@ -1,6 +1,5 @@
 
-import { PrismaClient } from '@prisma/client';
-import { SubscriptionTier, ProductType } from '../../types';
+import { PrismaClient, SubscriptionTier, ProductType } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
