@@ -23,6 +23,56 @@ async function main() {
     });
 
     console.log({ admin });
+
+    // Seed Digital Products
+    const products = [
+        {
+            title: "Financial Independence for Ghanaians",
+            description: "A comprehensive guide to building wealth in the local economy. Covers savings, investments, and debt management.",
+            price: 50.00,
+            type: "EBOOK",
+            downloadUrl: "https://osikani.com/dl/ebook-fin-freedom.pdf",
+            imageUrl: "https://placehold.co/600x400/emerald/white?text=Ebook"
+        },
+        {
+            title: "SME Cashflow Calculator",
+            description: "Automated Excel template to track daily sales, expenses, and profit margins for your shop.",
+            price: 80.00,
+            type: "TOOL",
+            downloadUrl: "https://osikani.com/dl/tool-cashflow.xlsx",
+            imageUrl: "https://placehold.co/600x400/blue/white?text=Tool"
+        },
+        {
+            title: "Retirement Planner",
+            description: "Project your pension needs and see how much you need to save monthly.",
+            price: 40.00,
+            type: "TOOL",
+            downloadUrl: "https://osikani.com/dl/tool-retirement.xlsx",
+            imageUrl: "https://placehold.co/600x400/purple/white?text=Tool"
+        }
+    ];
+
+    console.log('Seeding Products...');
+    for (const p of products) {
+        // @ts-ignore - ProductType enum might not be generated yet in types if migration running
+        const existing = await prisma.product.findFirst({ where: { title: p.title } });
+        if (!existing) {
+            // @ts-ignore
+            await prisma.product.create({
+                data: {
+                    title: p.title,
+                    description: p.description,
+                    price: p.price,
+                    type: p.type as any, // Cast to any to avoid TS errors before generation
+                    downloadUrl: p.downloadUrl,
+                    imageUrl: p.imageUrl
+                }
+            });
+            console.log(`Created: ${p.title}`);
+        } else {
+            console.log(`Skipped (Exists): ${p.title}`);
+        }
+    }
 }
 
 main()

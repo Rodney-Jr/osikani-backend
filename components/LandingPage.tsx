@@ -68,10 +68,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
           <span className="font-bold text-xl text-slate-900 tracking-tight">Osikani 🇬🇭</span>
         </div>
         <div className="hidden md:flex gap-8 text-sm font-bold text-slate-500">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Home</button>
-          <button onClick={() => document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">The Problem</button>
-          <button onClick={() => document.getElementById('solution')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Our Solution</button>
-          <button onClick={() => window.location.href = '/impact'} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Impact</button>
+          <button onClick={() => document.getElementById('solution')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">About</button>
+          <button onClick={() => window.location.href = '/pricing'} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Pricing</button>
+          <button onClick={() => window.location.href = '/store'} className="hover:text-emerald-600 transition-colors uppercase tracking-widest text-[11px]">Store</button>
           <button
             onClick={() => onNavigate && onNavigate('learning')}
             className="text-emerald-600 uppercase tracking-widest text-[11px] font-bold border border-emerald-200 px-3 py-1 rounded-full hover:bg-emerald-50 transition-all flex items-center gap-1"
@@ -80,12 +79,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onPartnerLogin })
           </button>
         </div>
         <div className="flex items-center gap-4">
-          <button
-            onClick={onPartnerLogin}
-            className="hidden md:flex text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors"
-          >
-            Partner Login
-          </button>
           <a href="https://wa.me/233555000000" target="_blank" rel="noreferrer" className="bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-md">
             <MessageCircle size={18} />
             <span>Start Chat</span>

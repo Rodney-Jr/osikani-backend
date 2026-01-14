@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -22,6 +22,10 @@ model User {
   goals       Goal[]
   reward      Reward?
   campaignLogs CampaignLog[]
+  
+  // Monetization
+  subscription Subscription?
+  purchases    Purchase[]
 }
 
 model Profile {
@@ -123,3 +127,42 @@ model CampaignLog {
   timestamp   DateTime @default(now())
 }
 
+
+// --- Monetization & Subscriptions ---
+
+model Subscription {
+  id          String           @id @default(uuid())
+  userId      String           @unique
+  user        User             @relation(fields: [userId], references: [id])
+  tier        String           @default("BASIC") // SubscriptionTier
+  startDate   DateTime         @default(now())
+  endDate     DateTime?        // Null = Lifetime/Indefinite (or ongoing)
+  isActive    Boolean          @default(true)
+  autoRenew   Boolean          @default(false)
+  updatedAt   DateTime         @updatedAt
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  type        String      // ProductType
+  downloadUrl String?     // Link to PDF/Tool
+  imageUrl    String?     // Cover image
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  purchases   Purchase[]
+}
+
+model Purchase {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  amount      Float
+  status      String   // "COMPLETED", "PENDING", "FAILED"
+  transactionId String? // External payment ref
+  createdAt   DateTime @default(now())
+}

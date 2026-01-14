@@ -60,6 +60,28 @@ const TOOLS: any[] = [
                     },
                     required: ["title", "targetAmount"]
                 }
+            },
+            {
+                name: "listMarketplaceProducts",
+                description: "Find digital products (Ebooks, Tools) to sell to the user when they need help.",
+                parameters: {
+                    type: Type.OBJECT,
+                    properties: {
+                        category: { type: Type.STRING, enum: ["EBOOK", "TOOL"] }
+                    }
+                }
+            },
+            {
+                name: "recommendSubscription",
+                description: "Recommend upgrading to Osikani Plus or Pro when user needs continuous help.",
+                parameters: {
+                    type: Type.OBJECT,
+                    properties: {
+                        tier: { type: Type.STRING, enum: ["PLUS", "PRO"] },
+                        reason: { type: Type.STRING }
+                    },
+                    required: ["tier", "reason"]
+                }
             }
         ]
     }
@@ -128,7 +150,7 @@ export const processUserMessage = async (
         }
 
         // LAYER 3: CORE INFERENCE
-        const modelName = 'gemini-flash-latest';
+        const modelName = 'gemini-2.0-flash-exp';
         let fullSystemInstruction = OSIKANI_SYSTEM_INSTRUCTION + userContext;
         fullSystemInstruction += "\n\nCRITICAL INSTRUCTION: If the user describes a financial event (sale, purchase, expense, income), YOU MUST call the `logTransaction` tool immediately. Do not ask for more details if the amount and category are clear.";
 
@@ -185,6 +207,21 @@ export const processUserMessage = async (
                 toolResult = await checkLoanReadiness(user.id);
             } else if (name === 'createSavingsGoal') {
                 toolResult = await createSavingsGoal(user.id, args.title as string, args.targetAmount as number);
+            } else if (name === 'listMarketplaceProducts') {
+                const { listProducts } = await import('./subscriptionService');
+                const products = await listProducts(args.category as any);
+                toolResult = products.map(p => ({
+                    title: p.title,
+                    price: p.price,
+                    description: p.description,
+                    action: `[BUY NOW: ${p.title} for GHS ${p.price}]` // Instructions for UI to render button
+                }));
+            } else if (name === 'recommendSubscription') {
+                toolResult = {
+                    message: "Offer generated. Encourage user to upgrade.",
+                    link: `/pricing?tier=${args.tier}`,
+                    tier: args.tier
+                };
             }
 
             // --- SECOND CALL (Response Generation) ---

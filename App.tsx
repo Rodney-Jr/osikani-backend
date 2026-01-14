@@ -7,6 +7,9 @@ import AdminLogin from './components/AdminLogin';
 import DashboardLayout from './components/DashboardLayout';
 import PartnerPortal from './components/PartnerPortal/PartnerPortal';
 import ImpactDonorView from './components/ImpactDonorView';
+import PricingPage from './components/PricingPage';
+import Marketplace from './components/Marketplace';
+import LearningHub from './components/LearningHub';
 
 // Protected Route Wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -41,6 +44,13 @@ const App: React.FC = () => {
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/partner" element={<PartnerWrapper />} />
           <Route path="/impact" element={<ImpactDonorView />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/store" element={<Marketplace />} />
+          <Route path="/learning" element={<div className="p-8 bg-slate-50 min-h-screen">
+            {/* Wrap in simple container for now since LearningHub expects strict props? 
+                Let's check LearningHub definition first to be safe, but tentatively: */}
+            <LearningHub />
+          </div>} />
 
           <Route path="/dashboard/*" element={
             <ProtectedRoute>

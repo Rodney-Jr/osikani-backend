@@ -5,6 +5,19 @@ export enum MessageRole {
   SYSTEM = 'system'
 }
 
+export enum SubscriptionTier {
+  BASIC = 'BASIC',
+  PLUS = 'PLUS',
+  PRO = 'PRO'
+}
+
+export enum ProductType {
+  EBOOK = 'EBOOK',
+  TOOL = 'TOOL',
+  COURSE = 'COURSE',
+  MODULE = 'MODULE'
+}
+
 export interface ChatMessage {
   id: string;
   role: MessageRole;

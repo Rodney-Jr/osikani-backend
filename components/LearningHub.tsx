@@ -230,14 +230,14 @@ const LearningHub: React.FC<LearningHubProps> = ({ isGuest = false, onBack }) =>
             Gamified financial literacy. Learn, earn XP, and become an Osikani.
           </p>
         </div>
-        {isGuest && onBack && (
+        <div className="flex gap-4">
           <button
-            onClick={onBack}
+            onClick={() => window.location.href = '/'}
             className="flex items-center gap-2 text-slate-500 hover:text-emerald-600 font-bold transition-colors"
           >
             <ChevronLeft size={20} /> Back to Home
           </button>
-        )}
+        </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

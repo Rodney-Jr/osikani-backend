@@ -56,6 +56,10 @@ app.use('/api/campaigns', campaignRouter);
 import { partnerRouter } from './routes/partner';
 app.use('/api/partner', partnerRouter);
 
+// Subscriptions & Marketplace
+import { subscriptionRouter } from './routes/subscription';
+app.use('/api/subscriptions', subscriptionRouter);
+
 // Static Serving for Production
 import path from 'path';
 import { fileURLToPath } from 'url';
