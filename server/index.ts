@@ -40,13 +40,15 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', service: 'Osikani BFF' });
 });
 
-app.get('/', (req, res) => {
-    res.send(`
-        <h1>Osikani Backend Running</h1>
-        <p>Port: ${PORT}</p>
-        <p>This is the API Server. To see the App, visit the Frontend URL (usually port 3000 or 5173).</p>
-    `);
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.get('/', (req, res) => {
+        res.send(`
+            <h1>Osikani Backend Running</h1>
+            <p>Port: ${PORT}</p>
+            <p>This is the API Server. To see the App, visit the Frontend URL (usually port 3000 or 5173).</p>
+        `);
+    });
+}
 
 
 import { ragRouter } from './routes/rag';

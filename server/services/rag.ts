@@ -30,7 +30,21 @@ const cleanFilename = (filename: string): string => {
 let db: lancedb.Connection | null = null;
 const getDB = async () => {
     if (!db) {
-        db = await lancedb.connect(DB_DIR);
+        try {
+            db = await lancedb.connect(DB_DIR);
+        } catch (error) {
+            console.error("❌ LanceDB Connection Failed:", error);
+            console.warn("⚠️ Attempting self-healing: Deleting corrupted DB directory...");
+
+            try {
+                fs.rmSync(DB_DIR, { recursive: true, force: true });
+                console.log("✅ Deleted .lancedb directory. Retrying connection...");
+                db = await lancedb.connect(DB_DIR);
+            } catch (retryError) {
+                console.error("❌ CRTICAL: LanceDB self-healing failed:", retryError);
+                throw retryError; // Let it crash if recovery fails
+            }
+        }
     }
     return db;
 };
