@@ -1,6 +1,5 @@
-
 import * as lancedb from "@lancedb/lancedb";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from 'fs';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -12,23 +11,18 @@ const DB_DIR = path.join(process.cwd(), '.lancedb');
 const TABLE_NAME = 'osikani_knowledge';
 
 // Initialize Gemini for Embeddings
-let client: GoogleGenAI | null = null;
+let client: GoogleGenerativeAI | null = null;
 const getClient = () => {
     if (!client) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error("API Key missing");
-        client = new GoogleGenAI({ apiKey });
+        client = new GoogleGenerativeAI(apiKey);
     }
     return client;
 };
 
 // Helper: Clean filename transparency (remove 'file-' and timestamp suffix)
 const cleanFilename = (filename: string): string => {
-    // Expected format: fieldname-timestamp-random.ext
-    // But simpler: just create a display name if possible. 
-    // For now, let's just return the filename, or try to strip the unique suffix if we matched the pattern in route.
-    // Route uses: file.fieldname + '-' + uniqueSuffix + path.extname
-    // Let's just return the raw filename for uniqueness, user can see the ID.
     return filename;
 };
 
@@ -44,11 +38,9 @@ const getDB = async () => {
 // Helper: Get Embedding
 const getEmbedding = async (text: string): Promise<number[]> => {
     const ai = getClient();
-    const result = await ai.models.embedContent({
-        model: "text-embedding-004",
-        contents: [{ parts: [{ text }] }]
-    });
-    return result.embeddings?.[0]?.values || [];
+    const model = ai.getGenerativeModel({ model: "text-embedding-004" });
+    const result = await model.embedContent(text);
+    return result.embedding.values;
 };
 
 // Ingest PDF

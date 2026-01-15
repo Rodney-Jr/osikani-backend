@@ -1,14 +1,14 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const apiKey = process.env.GEMINI_API_KEY || "";
-const genAI = new GoogleGenAI({ apiKey });
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export const createGameFromContent = async (title: string, textContent: string) => {
     // 1. Prompt Gemini to create questions
-    const response = await genAI.models.generateContent({
-        model: "gemini-1.5-flash",
+    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
+    const result = await model.generateContent({
         contents: [
             {
                 role: "user",
@@ -37,7 +37,8 @@ export const createGameFromContent = async (title: string, textContent: string) 
         ]
     });
 
-    const resultText = response.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+    const response = result.response;
+    const resultText = response.text() || "[]";
     const jsonString = resultText.replace(/```json|```/g, "").trim();
 
     try {

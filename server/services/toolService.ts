@@ -82,6 +82,28 @@ export const createSavingsGoal = async (userId: string, title: string, targetAmo
         });
         return { success: true, message: `Created goal: ${title} for ${targetAmount} GHS.` };
     } catch (error) {
+        console.error("Error creating savings goal:", error); // Added console.error for debugging
         return { success: false, message: "Failed to create goal." };
     }
 }
+
+export const updateUserProfile = async (userId: string, name: string, businessType: string) => {
+    try {
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                name,
+                onboarding: true,
+                profile: {
+                    update: {
+                        businessType
+                    }
+                }
+            }
+        });
+        return { success: true, message: `Profile updated! Nice to meet you, ${name}.` };
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        return { success: false, message: "Failed to update profile." };
+    }
+};

@@ -20,13 +20,32 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: true, // Allow any origin -> specifically reflects the request origin
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Required for Twilio Webhooks
+app.use(express.urlencoded({ extended: true }));
+
+// Request Logger
+app.use((req, res, next) => {
+    console.log(`📡 [${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
 
 // Routes
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', service: 'Osikani BFF' });
+});
+
+app.get('/', (req, res) => {
+    res.send(`
+        <h1>Osikani Backend Running</h1>
+        <p>Port: ${PORT}</p>
+        <p>This is the API Server. To see the App, visit the Frontend URL (usually port 3000 or 5173).</p>
+    `);
 });
 
 
@@ -35,7 +54,7 @@ import { handleWhatsAppMessage } from './routes/whatsapp';
 import { verifyCloudWebhook, handleCloudMessage } from './routes/whatsapp-cloud';
 
 app.use('/api/rag', ragRouter);
-app.post('/api/chat', generateChatResponse);
+app.post('/api/chat/generate', generateChatResponse);
 
 // Twilio Adapter
 app.post('/api/whatsapp', handleWhatsAppMessage);

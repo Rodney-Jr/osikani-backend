@@ -1,20 +1,20 @@
 
-import { GoogleGenAI, Type } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { runSecurityGateway, SEMANTIC_AUDIT_INSTRUCTION } from './security';
 import { searchKnowledgeBase } from './rag';
 import { OSIKANI_SYSTEM_INSTRUCTION } from '../constants';
 import { getOrCreateUser, getUserProfile } from './userService';
-import { logTransaction, checkLoanReadiness, createSavingsGoal } from './toolService';
+import { logTransaction, checkLoanReadiness, createSavingsGoal, updateUserProfile } from './toolService';
 import { processGameMove } from './gameEngine'; // Gamification
 
-let client: GoogleGenAI | null = null;
+let genAI: GoogleGenerativeAI | null = null;
 const getClient = () => {
-    if (!client) {
+    if (!genAI) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) throw new Error("API Key is missing from server environment.");
-        client = new GoogleGenAI({ apiKey });
+        genAI = new GoogleGenerativeAI(apiKey);
     }
-    return client;
+    return genAI;
 };
 
 export interface ChatResponse {
@@ -24,6 +24,7 @@ export interface ChatResponse {
 }
 
 // Tool Definitions
+// Note: SDK types use 'object', 'string' etc directly
 const TOOLS: any[] = [
     {
         functionDeclarations: [
@@ -31,12 +32,12 @@ const TOOLS: any[] = [
                 name: "logTransaction",
                 description: "Log a financial transaction (income/expense) for the user.",
                 parameters: {
-                    type: Type.OBJECT,
+                    type: "OBJECT",
                     properties: {
-                        type: { type: Type.STRING, enum: ["INCOME", "EXPENSE"] },
-                        amount: { type: Type.NUMBER, description: "Amount in Cedis (GHS)" },
-                        category: { type: Type.STRING, description: "Category e.g., Food, Transport, Sales" },
-                        description: { type: Type.STRING, description: "Short description of the item" }
+                        type: { type: "STRING", enum: ["INCOME", "EXPENSE"] },
+                        amount: { type: "NUMBER", description: "Amount in Cedis (GHS)" },
+                        category: { type: "STRING", description: "Category e.g., Food, Transport, Sales" },
+                        description: { type: "STRING", description: "Short description of the item" }
                     },
                     required: ["type", "amount", "category"]
                 }
@@ -45,7 +46,7 @@ const TOOLS: any[] = [
                 name: "checkLoanReadiness",
                 description: "Check if the user is ready for a loan based on their transaction history.",
                 parameters: {
-                    type: Type.OBJECT,
+                    type: "OBJECT",
                     properties: {},
                 }
             },
@@ -53,10 +54,10 @@ const TOOLS: any[] = [
                 name: "createSavingsGoal",
                 description: "Create a new savings goal for the user.",
                 parameters: {
-                    type: Type.OBJECT,
+                    type: "OBJECT",
                     properties: {
-                        title: { type: Type.STRING, description: "Title of the goal e.g. Paying School Fees" },
-                        targetAmount: { type: Type.NUMBER, description: "Target amount in GHS" }
+                        title: { type: "STRING", description: "Title of the goal e.g. Paying School Fees" },
+                        targetAmount: { type: "NUMBER", description: "Target amount in GHS" }
                     },
                     required: ["title", "targetAmount"]
                 }
@@ -65,9 +66,9 @@ const TOOLS: any[] = [
                 name: "listMarketplaceProducts",
                 description: "Find digital products (Ebooks, Tools) to sell to the user when they need help.",
                 parameters: {
-                    type: Type.OBJECT,
+                    type: "OBJECT",
                     properties: {
-                        category: { type: Type.STRING, enum: ["EBOOK", "TOOL"] }
+                        category: { type: "STRING", enum: ["EBOOK", "TOOL"] }
                     }
                 }
             },
@@ -75,12 +76,24 @@ const TOOLS: any[] = [
                 name: "recommendSubscription",
                 description: "Recommend upgrading to Osikani Plus or Pro when user needs continuous help.",
                 parameters: {
-                    type: Type.OBJECT,
+                    type: "OBJECT",
                     properties: {
-                        tier: { type: Type.STRING, enum: ["PLUS", "PRO"] },
-                        reason: { type: Type.STRING }
+                        tier: { type: "STRING", enum: ["PLUS", "PRO"] },
+                        reason: { type: "STRING" }
                     },
                     required: ["tier", "reason"]
+                }
+            },
+            {
+                name: "updateUserProfile",
+                description: "Update the user's profile with their Name and Business Type during onboarding.",
+                parameters: {
+                    type: "OBJECT",
+                    properties: {
+                        name: { type: "STRING", description: "The user's name" },
+                        businessType: { type: "STRING", description: "What they do (e.g., Market Trader, Student, Carpenter)" }
+                    },
+                    required: ["name", "businessType"]
                 }
             }
         ]
@@ -100,7 +113,7 @@ export const processUserMessage = async (
     }
 
     const securityLogs: string[] = [];
-    const ai = getClient();
+    const client = getClient();
     let user = null;
 
     try {
@@ -114,10 +127,26 @@ export const processUserMessage = async (
             userContext += `\n\n**RECENT TRANSACTIONS:**\n${profile.transactions.map((t: any) => `- ${t.date.toISOString().split('T')[0]}: ${t.type} ${t.amount} (${t.category})`).join('\n')}`;
         }
 
+        let fullSystemInstruction = OSIKANI_SYSTEM_INSTRUCTION + userContext;
+
+        // Onboarding Check
+        if (!user.onboarding) {
+            const onboardingInstruction = `
+\n\n**CRITICAL: NEW USER DETECTED**
+The UI has just asked the user for their **Name** and **Business Type**.
+IF the user's message contains this information (e.g., "I am Ama, a seamstress"):
+   - Call the \`updateUserProfile\` tool IMMEDIATELY with the extracted details.
+   - Do NOT ask for the info again.
+
+IF the user's message does NOT contain this info (e.g. just "Hi"):
+   - Ask for their Name and Business Type again in Ghanaian English.
+`;
+            fullSystemInstruction += onboardingInstruction;
+        }
+
         if (context) userContext += `\n\n**ADDITIONAL CONTEXT:**\n${context}`;
 
-        // 0. Gamification Interceptor
-        // If the user is in an active game session, the Game Engine takes over.
+        // 0. Gamification Interceptor (Skipped for brevity/focus)
         try {
             const gameResponse = await processGameMove(phoneNumber, message);
             if (gameResponse) {
@@ -133,7 +162,7 @@ export const processUserMessage = async (
 
         // LAYER 1: SECURITY GATEWAY
         const scan = await runSecurityGateway(message, audioData);
-        const securityLogs = scan.logs ? [...scan.logs] : [];
+        if (scan.logs) securityLogs.push(...scan.logs);
 
         if (!scan.isSafe) {
             securityLogs.push(`🛑 BLOCK: ${scan.threatsDetected.join(", ")}`);
@@ -144,14 +173,10 @@ export const processUserMessage = async (
             };
         }
 
-        // LAYER 2: SEMANTIC AI AUDIT
-        if (scan.isSemanticScanRequired) {
-            securityLogs.push("Semantic Audit: Skipped (Optimization)");
-        }
-
         // LAYER 3: CORE INFERENCE
-        const modelName = 'gemini-2.0-flash-exp';
-        let fullSystemInstruction = OSIKANI_SYSTEM_INSTRUCTION + userContext;
+        // Switching to Gemini 2.5 Flash (Fresh Quota)
+        // const modelName = 'models/gemini-2.0-flash-lite-preview-02-05';
+        const modelName = 'models/gemini-2.5-flash';
         fullSystemInstruction += "\n\nCRITICAL INSTRUCTION: If the user describes a financial event (sale, purchase, expense, income), YOU MUST call the `logTransaction` tool immediately. Do not ask for more details if the amount and category are clear.";
 
         // RAG Search
@@ -163,39 +188,47 @@ export const processUserMessage = async (
 
         const parts: any[] = [{ text: scan.redactedText }];
         if (audioData) {
-            parts.push({ inlineData: audioData });
+            // New SDK Format for inline data?
+            parts.push({ inlineData: { mimeType: "audio/mp3", data: audioData } });
         }
 
         // Sanitize History
-        const safeHistory = Array.isArray(history) ? history.map((msg: any) => ({
+        // Gemini SDK requires history to start with 'user'. 
+        // We filter out any leading 'model' messages (like the welcome message).
+        let safeHistory = Array.isArray(history) ? history.map((msg: any) => ({
             role: msg.role === 'assistant' || msg.role === 'model' ? 'model' : 'user',
             parts: msg.parts || [{ text: msg.content || "" }]
         })) : [];
 
-        const contents = [
-            ...safeHistory,
-            { role: 'user', parts }
-        ];
+        // Find first user message
+        const firstUserIndex = safeHistory.findIndex(msg => msg.role === 'user');
+        if (firstUserIndex === -1) {
+            safeHistory = []; // No user messages? Reset history.
+        } else {
+            safeHistory = safeHistory.slice(firstUserIndex); // Start from first proper user interaction
+        }
 
         // --- FIRST CALL (Logic decision) ---
-        const initialResponse = await ai.models.generateContent({
+        const model = client.getGenerativeModel({
             model: modelName,
-            contents,
-            tools: TOOLS,
-            config: {
-                systemInstruction: fullSystemInstruction,
-                temperature: 0.65,
-            },
+            systemInstruction: fullSystemInstruction,
+            tools: TOOLS
         });
 
-        // Check for Function Call - SDK Agnostic Access
-        const candidates = initialResponse.candidates;
-        const firstCandidate = candidates && candidates[0];
-        const firstPart = firstCandidate?.content?.parts?.[0];
-        const functionCall = firstPart?.functionCall;
+        const chat = model.startChat({
+            history: safeHistory
+        });
 
-        if (functionCall) {
-            const { name, args } = functionCall;
+        const result = await chat.sendMessage(parts);
+        const response = result.response;
+        const text = response.text();
+        const functionCalls = response.functionCalls();
+
+        // Check for Function Call
+        if (functionCalls && functionCalls.length > 0) {
+            const call = functionCalls[0];
+            const { name } = call;
+            const args: any = call.args;
             securityLogs.push(`🤖 TOOL USE: Calling ${name}...`);
 
             let toolResult: any = { message: "Tool execution failed" };
@@ -214,7 +247,7 @@ export const processUserMessage = async (
                     title: p.title,
                     price: p.price,
                     description: p.description,
-                    action: `[BUY NOW: ${p.title} for GHS ${p.price}]` // Instructions for UI to render button
+                    action: `[BUY NOW: ${p.title} for GHS ${p.price}]`
                 }));
             } else if (name === 'recommendSubscription') {
                 toolResult = {
@@ -222,30 +255,30 @@ export const processUserMessage = async (
                     link: `/pricing?tier=${args.tier}`,
                     tier: args.tier
                 };
+            } else if (name === 'updateUserProfile') {
+                toolResult = await updateUserProfile(user.id, args.name as string, args.businessType as string);
             }
 
-            // --- SECOND CALL (Response Generation) ---
-            const response2 = await ai.models.generateContent({
-                model: modelName,
-                contents: [
-                    ...contents,
-                    { role: 'model', parts: [firstPart] },
-                    { role: 'function', parts: [{ functionResponse: { name, response: { result: toolResult } } }] }
-                ],
-                config: {
-                    systemInstruction: fullSystemInstruction
+            // --- SECOND CALL (Response Generation with Tool Output) ---
+            // New SDK handles history automatically in chat session, but we need to feed the tool result back
+            const result2 = await chat.sendMessage([
+                {
+                    functionResponse: {
+                        name: name,
+                        response: { result: toolResult }
+                    }
                 }
-            });
+            ]);
 
             return {
-                text: response2.text || "Transaction processed.",
+                text: result2.response.text(),
                 confidence: scan.confidenceScore,
                 securityLogs: [...securityLogs, `Tool Output: ${JSON.stringify(toolResult).substring(0, 50)}...`]
             };
         }
 
         return {
-            text: initialResponse.text || "I dey listen.",
+            text: text || "I dey listen.",
             confidence: scan.confidenceScore,
             securityLogs
         };

@@ -61,9 +61,48 @@ const PricingPage: React.FC = () => {
         }
     ];
 
-    const handleSubscribe = (tierName: string) => {
-        // In a real app, this would redirect to a Payment Gateway (Paystack/Flutterwave)
-        alert(`Initiating payment for ${tierName}. Integration pending.`);
+    const handleSubscribe = async (tierName: string) => {
+        // 1. Get User ID (Web Guest or Auth)
+        let userId = localStorage.getItem('osikani_web_session');
+        if (!userId) {
+            alert("No active session found. Please start a chat first to create a guest session.");
+            return;
+        }
+
+        // 2. Map display name to Enum
+        const tierMap: Record<string, string> = {
+            "Osikani Basic": "BASIC",
+            "Osikani Plus": "PLUS",
+            "Osikani Pro": "PRO"
+        };
+        const tierEnum = tierMap[tierName];
+
+        if (!tierEnum) return;
+
+        // 3. Simulated Payment Flow
+        const confirmed = window.confirm(`[SIMULATED PAYMENT]\n\nDo you want to pay for ${tierName}?\n\nClick OK to process mock payment.`);
+
+        if (confirmed) {
+            try {
+                const response = await fetch('/api/subscriptions/upgrade', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, tier: tierEnum })
+                });
+
+                if (response.ok) {
+                    alert(`Success! You have been upgraded to ${tierName}. The AI will now unlock premium features.`);
+                    // Ideally, refresh context or redirect
+                    navigate('/');
+                } else {
+                    const err = await response.json();
+                    alert(`Failed: ${err.error}`);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Network error occurred.");
+            }
+        }
     };
 
     return (
@@ -98,8 +137,8 @@ const PricingPage: React.FC = () => {
                             <button
                                 onClick={() => handleSubscribe(tier.name)}
                                 className={`w-full py-3 rounded-xl font-bold mb-8 transition-all ${tier.name === 'Osikani Pro'
-                                        ? 'bg-emerald-500 hover:bg-emerald-400 text-white'
-                                        : 'bg-slate-900 hover:bg-slate-800 text-white'
+                                    ? 'bg-emerald-500 hover:bg-emerald-400 text-white'
+                                    : 'bg-slate-900 hover:bg-slate-800 text-white'
                                     }`}>
                                 {tier.cta}
                             </button>

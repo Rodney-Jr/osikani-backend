@@ -12,11 +12,16 @@ export const getSubscription = async (userId: string) => {
     });
 };
 
+import { getOrCreateUser } from './userService';
+
 /**
  * Upgrade or Downgrade a user's subscription.
  * In a real app, this would be triggered by a webhook from a payment provider.
  */
 export const upgradeSubscription = async (userId: string, tier: SubscriptionTier) => {
+    // Ensure user exists (in case they upgraded before ever chatting)
+    await getOrCreateUser(userId);
+
     console.log(`Upgrading user ${userId} to ${tier}`);
     return await prisma.subscription.upsert({
         where: { userId },

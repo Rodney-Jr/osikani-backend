@@ -29,7 +29,7 @@ const OsikaniWidget: React.FC = () => {
         // Initial greeting if empty
         if (messages.length === 0) {
             setMessages([
-                { role: 'model', content: "Chale, welcome! 👋 I am Osikani. asking me anything about the platform or how to manage your money better. How I fit help you today?" }
+                { role: 'model', content: "Chale, welcome! 👋 I am Osikani, your personal finance partner.\n\nTo help you well, abeg tell me your **Name** and what **Business** you dey do? (e.g. 'I be Kofi, I dey sell shoes')" }
             ]);
         }
     }, []);
@@ -48,7 +48,7 @@ const OsikaniWidget: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('/api/chat/generate', {
+            const response = await fetch('http://localhost:3002/api/chat/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -145,8 +145,8 @@ const OsikaniWidget: React.FC = () => {
                                     <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold mr-2 mt-1 shrink-0">O</div>
                                 )}
                                 <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user'
-                                        ? 'bg-emerald-600 text-white rounded-br-none shadow-md'
-                                        : 'bg-white text-slate-700 border border-slate-200 rounded-bl-none shadow-sm'
+                                    ? 'bg-emerald-600 text-white rounded-br-none shadow-md'
+                                    : 'bg-white text-slate-700 border border-slate-200 rounded-bl-none shadow-sm'
                                     }`}>
                                     {msg.content}
                                 </div>
@@ -182,8 +182,8 @@ const OsikaniWidget: React.FC = () => {
                                 onClick={handleSend}
                                 disabled={isLoading || !inputText.trim()}
                                 className={`p-2 rounded-lg transition-all ${isLoading || !inputText.trim()
-                                        ? 'bg-slate-200 text-slate-400'
-                                        : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md'
+                                    ? 'bg-slate-200 text-slate-400'
+                                    : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md'
                                     }`}
                             >
                                 <Send size={18} />

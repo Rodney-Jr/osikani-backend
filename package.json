@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev:client": "vite",
-    "dev:server": "cross-env PORT=3001 tsx server/index.ts",
+    "dev:server": "cross-env PORT=3002 tsx server/index.ts",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "build:client": "vite build --outDir dist/client",
     "build:server": "tsup server/index.ts --format cjs --shims --out-dir dist/server",
@@ -14,7 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.33.0",
+    "@google/generative-ai": "^0.24.1",
     "@lancedb/lancedb": "^0.23.0",
     "@prisma/client": "5.22.0",
     "bcryptjs": "^3.0.3",
