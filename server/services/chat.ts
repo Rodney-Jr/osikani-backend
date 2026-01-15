@@ -91,7 +91,10 @@ const TOOLS: any[] = [
                     type: "OBJECT",
                     properties: {
                         name: { type: "STRING", description: "The user's name" },
-                        businessType: { type: "STRING", description: "What they do (e.g., Market Trader, Student, Carpenter)" }
+                        businessType: { type: "STRING", description: "What they do (e.g., Market Trader, Student)" },
+                        age: { type: "NUMBER", description: "User's age (optional)" },
+                        gender: { type: "STRING", description: "Gender (Male/Female/Other) (optional)" },
+                        location: { type: "STRING", description: "City or Town (optional)" }
                     },
                     required: ["name", "businessType"]
                 }
@@ -133,13 +136,13 @@ export const processUserMessage = async (
         if (!user.onboarding) {
             const onboardingInstruction = `
 \n\n**CRITICAL: NEW USER DETECTED**
-The UI has just asked the user for their **Name** and **Business Type**.
-IF the user's message contains this information (e.g., "I am Ama, a seamstress"):
-   - Call the \`updateUserProfile\` tool IMMEDIATELY with the extracted details.
-   - Do NOT ask for the info again.
+The UI has just asked the user for their **Name, Business, and Location**.
+IF the user's message contains this information (e.g., "I am Ama, a seamstress in Accra"):
+   - Call the \`updateUserProfile\` tool IMMEDIATELY with the extracted details (Name, Business, Location).
+   - If Age or Gender is missing, you can infer Gender from name if obvious, or ask for Age politely in the next turn.
 
 IF the user's message does NOT contain this info (e.g. just "Hi"):
-   - Ask for their Name and Business Type again in Ghanaian English.
+   - Ask for their Name, Business, and Location again in Ghanaian English.
 `;
             fullSystemInstruction += onboardingInstruction;
         }
@@ -256,7 +259,7 @@ IF the user's message does NOT contain this info (e.g. just "Hi"):
                     tier: args.tier
                 };
             } else if (name === 'updateUserProfile') {
-                toolResult = await updateUserProfile(user.id, args.name as string, args.businessType as string);
+                toolResult = await updateUserProfile(user.id, args.name, args.businessType, args.age, args.gender, args.location);
             }
 
             // --- SECOND CALL (Response Generation with Tool Output) ---

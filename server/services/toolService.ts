@@ -87,7 +87,7 @@ export const createSavingsGoal = async (userId: string, title: string, targetAmo
     }
 }
 
-export const updateUserProfile = async (userId: string, name: string, businessType: string) => {
+export const updateUserProfile = async (userId: string, name: string, businessType: string, age?: number, gender?: string, location?: string) => {
     try {
         await prisma.user.update({
             where: { id: userId },
@@ -96,7 +96,10 @@ export const updateUserProfile = async (userId: string, name: string, businessTy
                 onboarding: true,
                 profile: {
                     update: {
-                        businessType
+                        businessType,
+                        age,
+                        gender,
+                        location
                     }
                 }
             }

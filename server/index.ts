@@ -81,6 +81,10 @@ app.use('/api/partner', partnerRouter);
 import { subscriptionRouter } from './routes/subscription';
 app.use('/api/subscriptions', subscriptionRouter);
 
+// Impact Dashboard
+import { impactRouter } from './routes/impact';
+app.use('/api/impact', impactRouter);
+
 // Static Serving for Production
 import path from 'path';
 import { fileURLToPath } from 'url';

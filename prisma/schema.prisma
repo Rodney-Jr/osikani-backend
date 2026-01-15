@@ -35,6 +35,11 @@ model Profile {
   businessType String? // e.g., "Market Trader", "Student"
   monthlyIncome Float?
   currency    String @default("GHS")
+  
+  // Demographics
+  age         Int?
+  gender      String?
+  location    String?
 }
 
 model Transaction {

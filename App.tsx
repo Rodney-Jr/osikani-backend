@@ -6,7 +6,7 @@ import LandingPage from './components/LandingPage';
 import AdminLogin from './components/AdminLogin';
 import DashboardLayout from './components/DashboardLayout';
 import PartnerPortal from './components/PartnerPortal/PartnerPortal';
-import ImpactDonorView from './components/ImpactDonorView';
+import ImpactDashboard from './components/ImpactDashboard';
 import PricingPage from './components/PricingPage';
 import Marketplace from './components/Marketplace';
 import LearningHub from './components/LearningHub';
@@ -43,7 +43,7 @@ const App: React.FC = () => {
 
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/partner" element={<PartnerWrapper />} />
-          <Route path="/impact" element={<ImpactDonorView />} />
+          <Route path="/impact" element={<ImpactDashboard />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/store" element={<Marketplace />} />
           <Route path="/learning" element={<div className="p-8 bg-slate-50 min-h-screen">

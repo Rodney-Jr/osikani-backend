@@ -29,7 +29,7 @@ const OsikaniWidget: React.FC = () => {
         // Initial greeting if empty
         if (messages.length === 0) {
             setMessages([
-                { role: 'model', content: "Chale, welcome! 👋 I am Osikani, your personal finance partner.\n\nTo help you well, abeg tell me your **Name** and what **Business** you dey do? (e.g. 'I be Kofi, I dey sell shoes')" }
+                { role: 'model', content: "Chale, welcome! 👋 I am Osikani, your personal finance partner.\n\nTo help you well, abeg tell me your **Name**, **Business**, and **Location**? (e.g. 'I be Kofi, I dey sell shoes for Kantamanto')" }
             ]);
         }
     }, []);
