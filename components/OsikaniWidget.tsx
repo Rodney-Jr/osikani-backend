@@ -48,7 +48,7 @@ const OsikaniWidget: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3002/api/chat/generate', {
+            const response = await fetch('/api/chat/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
