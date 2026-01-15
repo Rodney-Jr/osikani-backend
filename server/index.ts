@@ -102,6 +102,19 @@ if (process.env.NODE_ENV === 'production') {
 // Start Server
 const server = app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`✅ Osikani BFF running on port ${PORT}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
+
+    if (process.env.NODE_ENV === 'production') {
+        const clientDistPath = path.join(projectRoot, '../client');
+        console.log(`📂 Serving Client from: ${clientDistPath}`);
+        import('fs').then(fs => {
+            if (fs.existsSync(clientDistPath)) {
+                console.log("✅ Client directory exists.");
+            } else {
+                console.error("❌ Client directory NOT found at expected path!");
+            }
+        });
+    }
 });
 
 server.on('error', (err) => {
