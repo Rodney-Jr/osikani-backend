@@ -179,7 +179,7 @@ IF the user's message does NOT contain this info (e.g. just "Hi"):
         // LAYER 3: CORE INFERENCE
         // Switching to Gemini 2.5 Flash (Fresh Quota)
         // const modelName = 'models/gemini-2.0-flash-lite-preview-02-05';
-        const modelName = 'models/gemini-2.5-flash';
+        const modelName = 'models/gemini-2.0-flash-exp';
         fullSystemInstruction += "\n\nCRITICAL INSTRUCTION: If the user describes a financial event (sale, purchase, expense, income), YOU MUST call the `logTransaction` tool immediately. Do not ask for more details if the amount and category are clear.";
 
         // RAG Search
@@ -212,17 +212,39 @@ IF the user's message does NOT contain this info (e.g. just "Hi"):
         }
 
         // --- FIRST CALL (Logic decision) ---
-        const model = client.getGenerativeModel({
-            model: modelName,
-            systemInstruction: fullSystemInstruction,
-            tools: TOOLS
-        });
+        console.log("🤖 Initializing Model:", modelName);
+        // Helper: Retry Wrapper
+        const callWithRetry = async (currentModelName: string, retries = 3, delay = 2000): Promise<any> => {
+            try {
+                const model = client.getGenerativeModel({
+                    model: currentModelName,
+                    systemInstruction: fullSystemInstruction,
+                    tools: TOOLS
+                });
 
-        const chat = model.startChat({
-            history: safeHistory
-        });
+                const chat = model.startChat({ history: safeHistory });
+                return await chat.sendMessage(parts);
+            } catch (error: any) {
+                const isRateLimit = error.message?.includes('429') || error.status === 429;
+                const isOverloaded = error.message?.includes('503') || error.status === 503;
 
-        const result = await chat.sendMessage(parts);
+                if ((isRateLimit || isOverloaded) && retries > 0) {
+                    console.warn(`⚠️ Rate Limit/Overload on ${currentModelName}. Retrying in ${delay}ms...`);
+                    await new Promise(res => setTimeout(res, delay));
+                    return callWithRetry(currentModelName, retries - 1, delay * 2);
+                }
+
+                // Fallback Logic: If 2.0-exp fails, try Stable Flash Latest
+                if (currentModelName === 'models/gemini-2.0-flash-exp' && retries === 0) {
+                    console.warn("⚠️ Switching to Fallback Model: gemini-flash-latest");
+                    return callWithRetry('models/gemini-flash-latest', 1, 2000);
+                }
+
+                throw error;
+            }
+        };
+
+        const result = await callWithRetry(modelName);
         const response = result.response;
         const text = response.text();
         const functionCalls = response.functionCalls();
