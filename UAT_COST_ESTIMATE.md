@@ -39,9 +39,10 @@ If UAT includes testing WhatsApp (Omni-channel).
 
 | Item | Provider | Cost |
 | :--- | :--- | :--- |
-| **WhatsApp Numbers** | Twilio/Meta | ~$15.00 / month |
+| **Phone Number Rental** | Twilio | ~$2.00 / month |
+| **Twilio Messaging Fees** | Twilio | ~$10.00 / month (Est. markup per message) |
 | **Conversation Fees** | Meta | First 1,000 conversations are free. |
-| **Overage** | ~$0.03-0.05 / convo | Est. 1,000 paid conversations (active testing). |
+| **Meta Overage** | Meta | ~$33.00 / month (Est. 1,000 paid conversations) |
 | **Total** | | **~$45.00 / month** |
 
 ---
